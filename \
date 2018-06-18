@@ -1,0 +1,51 @@
+" ===== vim-plug ===== 
+call plug#begin()
+
+" Status bar for vim
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" JavaScript bundle for vim, this bundle provides syntax highlighting and improved indentation.
+Plug 'pangloss/vim-javascript'
+Plug 'maxmellon/vim-jsx-pretty'
+
+" vim monokai thene
+Plug 'crusoexia/vim-monokai'
+
+" Better comments and keybindings
+Plug 'scrooloose/nerdcommenter'
+
+" Visual indicators of marks
+Plug 'kshenoy/vim-signature'
+
+" Navigate tmux panes with hjkl
+Plug 'christoomey/vim-tmux-navigator'
+
+call plug#end()
+
+" ===== My plugin settings =====
+
+" vim-airline
+set laststatus=2
+let g:airline#extension#branch#enabled = 1
+let g:airline#extension#tabline#enabled = 1
+let g:airline_theme = 'simple'
+let g:airline_powerline_fonts = 1
+" vim-airline-themes
+colorscheme monokai
+set t_Co=256
+" vim-javascript
+let g:javascript_plugin_jsdoc = 1
+" vim-jsx-pretty
+let g:vim_jsx_pretty_enable_jsx_highlight = 1
+let g:vim_jsx_pretty_colorful_config = 0
+" vim-monokai
+" nerdcommenter
+map ,cb <plug>NERDComSexyComment
+let g:NERDSpaceDelims = 1
+let g:NERDCompatSexyComs = 1
+" vim-signatiure
+" vim-tmiux-navigator
+
+" ===== My vim settings =====
+filetype plugin indent on
