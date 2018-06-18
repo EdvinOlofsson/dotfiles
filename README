@@ -2,4 +2,7 @@
 * Mac spesific: 
     * Check iterm2 > preferences > profiles > Use a different font for non-ASCII text
     * And change Non/ASCII Font to a powerline font i.e '12pt Meslo LG M DZ Regular for Powerline'
-* Install neovim and run :PlugInstalls
+* Install neovim
+* Install vim-plug:
+    * (Unix) curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vi
+* Run :PlugClean and :PlugInstall
