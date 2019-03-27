@@ -1,0 +1,53 @@
+[user]
+        name = Edvin Olofsson
+        email = eolofsso@cisco.com
+[core]
+        editor = vim
+	whitespace = trailing-space,space-before-tab
+[merge]
+        tool = meld 
+        stat = true
+[push]
+	default = simple
+[color]
+        ui = auto
+        status = always
+        branch = always
+[diff]
+        mnemonicprefix = true
+	renames = copies
+[alias]
+        lg = "!f() { git log -$1 --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(red)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all; }; f"
+        lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+        lg2 = log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short
+        bdiff = git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+
+        bav = branch -av
+        bavv = branch -avv
+        bv = branch -v
+        bvv = branch -vv
+        bd = branch -d
+        bDo = push origin --delete
+        br = branch
+        cam = commit -a -m
+        cm = commit -m
+        ceg = config --edit --global
+        co = checkout
+        cob = checkout -b
+        diffc = diff --color-words
+        diffh = diff HEAD^ HEAD
+        diffhc = diff HEAD^ HEAD --color-words
+	diffs = diff --stat
+        diffhs = diff --stat HEAD^
+        pullr = pull --rebase
+	rvu = remote -v update
+        st = status
+        stsb = status -sb
+	unstage = reset HEAD
+
+	bst = "!f() { echo 'fetching'; git fetch; git branch -vv | grep '*'; }; f"
+	checkstash = "!f() { git stash show -p stash@{$1}; }; f"
+        coq = "!f() { git checkout $1 -q; }; f"
+        last = "!f() { git log $1 --pretty=format:'%C(yellow)%h%C(reset) - %s %C(red)(%cn)%C(reset) %C(green)(%cr)%C(reset)'; }; f"
+        res = "!f() { git reset HEAD~$1 $2; }; f"
+

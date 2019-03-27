@@ -23,6 +23,8 @@ Plug 'scrooloose/nerdcommenter'
 
 " File navigator
 Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Visual indicators of marks
 Plug 'kshenoy/vim-signature'
@@ -40,32 +42,52 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 
 " Tab completion
-Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py --js-completer' }
+" Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py --js-completer' }
+Plug 'Valloric/YouCompleteMe'
+
+Plug 'AndrewRadev/splitjoin.vim'
+
+" Gitwrapper for airline
+Plug 'tpope/vim-fugitive'
+
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+Plug 'vim-scripts/Tabmerge'
 
 call plug#end()
 
 " ===== My plugin settings =====
+let mapleader=","
+set clipboard+=unnamedplus
 
 " vim-airline
 set laststatus=2
+if !exists('g:airline_symbols')
+	let g:airline_symbols={}
+endif
 let g:airline#extension#branch#enabled=1
 let g:airline#extension#tabline#enabled=1
 let g:airline_theme='simple'
 let g:airline_powerline_fonts=1
-if !exists('g:airline_symbols')
-	let g:airline_symbols={}
-endif
 let g:airline_symbols.space="\ua0"
-let g:airline_left_sep=''
+" let g:airline_left_sep=''
+let g:airline_left_sep=''
 let g:airline_left_alt_sep=''
-let g:airline_right_sep=''
+" let g:airline_right_sep=''
+let g:airline_right_sep=''
 let g:airline_right_alt_sep=''
 let g:airline_symbols.linenr='☯'
-let g:airline_symbols.branch='⎇'
+" let g:airline_symbols.branch='⎇'
+let g:airline_symbols.branch = ''
 let g:airline_symbols.paste='ρ'
+let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.whitespace=''
 let g:airline_skip_empty_sections=1
+let g:airline_section_x=0
+let g:airline_section_y=0
 let g:airline#extensions#branch#displayed_head_limit=30
+let g:airline#extensions#branch#empty_message = '!branch'
 let g:airline#extensions#tabline#show_tab_type=1
 let g:airline#extentions#tabline#fnamecollapse=0
 let g:airline#extensions#syntastic#enabled=1
@@ -76,12 +98,9 @@ let g:airline#extensions#ycm#enabled=1
 let g:airline#extensions#ycm#error_symbol='e:'
 let g:airline#extensions#ycm#warning_symbol='w:'
 
-" vim-airline-themes
-colorscheme monokai
-set t_Co=256
-
 " Git gutter
 let g:gitgutter_max_signs=1000
+autocmd BufWritePost * GitGutter
 nmap <Leader>hs <Plug>GitGutterStageHunk
 nmap <Leader>hr <Plug>GitGutterUndoHunk
 nmap <Leader>hn <Plug>GitGutterNextHunk
@@ -118,6 +137,9 @@ let g:NERDTreeIndicatorMapCustom={
 map <C-t> :NERDTreeToggle %:p:h<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
 
 " vim-signatiure
 " vim-surround
@@ -135,7 +157,8 @@ let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=1
 let g:syntastic_cursor_column=0
 let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_exec='/Users/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/.bin/eslint'
+let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
+let g:syntastic_enable_highlighting=0
 let g:syntastic_error_symbol='💩'
 let g:syntastic_style_error_symbol='💩'
 let g:syntastic_warning_symbol='⚠️'
@@ -162,7 +185,7 @@ nnoremap <Leader>pe :pnext<CR>
 
 " vim-tmiux-navigator
 " tmuxline
-let g:tmuxline_powerline_separators = 1
+let g:tmuxline_powerline_separators = 0
 let g:tmuxline_preset = {
     \ 'a': '#S',
     \ 'b': '#W',
@@ -172,9 +195,14 @@ let g:tmuxline_preset = {
     \ 'y': ['%b %d', '%R'],
     \ 'z': '#H'}
 
+" fzf
+map <Leader>z :FZF<CR>
+
 " ===== my vim settings =====
 filetype plugin indent on
 syntax on
+colorscheme monokai
+set t_Co=256
 
 set mouse=
 set nobackup
@@ -201,7 +229,8 @@ hi CursorLineNr ctermfg=Green
 hi clear CursorLine
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
-set listchars=tab:▸\ ,trail:·,eol:¬,space:\ 
+" set listchars=tab:▸\ ,trail:·,eol:¬,space:\ 
+set listchars=tab:▸\ ,trail:·,space:\ 
 set splitbelow
 set splitright
 set expandtab
@@ -214,7 +243,6 @@ let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-let mapleader=","
 nmap     <silent> <ESC> :noh<CR>:pclose<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
@@ -229,8 +257,8 @@ nnoremap <Leader>Q :q!<CR>
 nnoremap <Leader>r :so ~/.config/nvim/init.vim<CR>:e<CR>
 nnoremap <Leader><Up> :exe "resize +5"<CR>
 nnoremap <Leader><Down> :exe "resize -5"<CR>
-nnoremap <Leader><Left> :exe "vertical resize -5"<CR>
-nnoremap <Leader><Right> :exe "vertical resize +5"<CR>
+nnoremap <Leader><Left> :exe "vertical resize -1"<CR>
+nnoremap <Leader><Right> :exe "vertical resize +1"<CR>
 
 nnoremap <Leader>vf ^<S-v>f{%
 nnoremap <Leader>vF ?{^<S-v>%
@@ -241,18 +269,17 @@ imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>/xxx<CR><C-n><C-n>c
 imap <Leader>iC console.log('');<Left><Left><Left>
 inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 " inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
-" inoremap <Leader>ii it('', async function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ib before(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
-" inoremap <Leader>ib before(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
-inoremap <Leader>ia after(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
-" inoremap <Leader>ia after(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ii it('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+" inoremap <Leader>ii it('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
+inoremap <Leader>ib before(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+" inoremap <Leader>ib before(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ia after(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+" inoremap <Leader>ia after(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
 nmap <Leader>id o,id
 nmap <Leader>ii o,ii
 nmap <Leader>ib o,ib
 nmap <Leader>ia o,ia
 inoremap <Leader>o <C-o>
-nmap <Leader>sw ysiw
 nnoremap <sapce> za
 nnoremap <space>f $zf%
 vnoremap <C-c> "+y
@@ -299,5 +326,9 @@ function! SynColour()
     echo "guibg = ".synIDattr(synIDtrans( synID(line("."), col("."), 1) ), "bg").", guifg = ".synIDattr(synIDtrans( synID(line("."), col("."), 1)), "fg")
 endfunction
 nnoremap <Leader>csc :call SynColour()<CR>
+
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+            \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+            \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 set secure

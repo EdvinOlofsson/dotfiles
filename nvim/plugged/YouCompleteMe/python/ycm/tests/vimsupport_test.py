@@ -26,8 +26,8 @@ from builtins import *  # noqa
 
 from ycm.tests import PathToTestFile
 from ycm.tests.test_utils import ( CurrentWorkingDirectory, ExtendedMock,
-                                   MockVimBuffers, MockVimModule, VimBuffer,
-                                   VimError )
+                                   MockVimBuffers, MockVimModule, Version,
+                                   VimBuffer, VimError )
 MockVimModule()
 
 from ycm import vimsupport
@@ -41,7 +41,7 @@ import json
 
 
 @patch( 'vim.eval', new_callable = ExtendedMock )
-def SetLocationListForBuffer_Current_test( vim_eval ):
+def SetLocationListsForBuffer_Current_test( vim_eval ):
   diagnostics = [ {
     'bufnr': 3,
     'filename': 'some_filename',
@@ -50,18 +50,17 @@ def SetLocationListForBuffer_Current_test( vim_eval ):
     'type': 'E',
     'valid': 1
   } ]
-  current_buffer = VimBuffer( '/test', number = 3, window = 7 )
-  with MockVimBuffers( [ current_buffer ], current_buffer, ( 1, 1 ) ):
-    vimsupport.SetLocationListForBuffer( 3, diagnostics )
+  current_buffer = VimBuffer( '/test', number = 3 )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
+    vimsupport.SetLocationListsForBuffer( 3, diagnostics )
 
-  # We asked for the buffer which is current, so we use winnr 0
   vim_eval.assert_has_exact_calls( [
-    call( 'setloclist( 0, {0} )'.format( json.dumps( diagnostics ) ) )
+    call( 'setloclist( 1, {0} )'.format( json.dumps( diagnostics ) ) )
   ] )
 
 
-@patch( 'vim.eval', new_callable = ExtendedMock, side_effect = [ 8, 1 ] )
-def SetLocationListForBuffer_NotCurrent_test( vim_eval ):
+@patch( 'vim.eval', new_callable = ExtendedMock )
+def SetLocationListsForBuffer_NotCurrent_test( vim_eval ):
   diagnostics = [ {
     'bufnr': 3,
     'filename': 'some_filename',
@@ -70,22 +69,16 @@ def SetLocationListForBuffer_NotCurrent_test( vim_eval ):
     'type': 'E',
     'valid': 1
   } ]
-  current_buffer = VimBuffer( '/test', number = 3, window = 7 )
-  other_buffer = VimBuffer( '/notcurrent', number = 1, window = 8 )
-  with MockVimBuffers( [ current_buffer, other_buffer ],
-                       current_buffer,
-                       ( 1, 1 ) ):
-    vimsupport.SetLocationListForBuffer( 1, diagnostics )
+  current_buffer = VimBuffer( '/test', number = 3 )
+  other_buffer = VimBuffer( '/notcurrent', number = 1 )
+  with MockVimBuffers( [ current_buffer, other_buffer ], [ current_buffer ] ):
+    vimsupport.SetLocationListsForBuffer( 1, diagnostics )
 
-  # We asked for a buffer which is not current, so we find the window
-  vim_eval.assert_has_exact_calls( [
-    call( 'bufwinnr(1)' ), # returns 8 due to side_effect
-    call( 'setloclist( 8, {0} )'.format( json.dumps( diagnostics ) ) )
-  ] )
+  vim_eval.assert_not_called()
 
 
 @patch( 'vim.eval', new_callable = ExtendedMock, side_effect = [ -1, 1 ] )
-def SetLocationListForBuffer_NotVisible_test( vim_eval ):
+def SetLocationListsForBuffer_NotVisible_test( vim_eval ):
   diagnostics = [ {
     'bufnr': 3,
     'filename': 'some_filename',
@@ -94,17 +87,32 @@ def SetLocationListForBuffer_NotVisible_test( vim_eval ):
     'type': 'E',
     'valid': 1
   } ]
-  current_buffer = VimBuffer( '/test', number = 3, window = 7 )
-  other_buffer = VimBuffer( '/notcurrent', number = 1, window = 8 )
-  with MockVimBuffers( [ current_buffer, other_buffer ],
-                       current_buffer,
-                       ( 1, 1 ) ):
-    vimsupport.SetLocationListForBuffer( 1, diagnostics )
+  current_buffer = VimBuffer( '/test', number = 3 )
+  other_buffer = VimBuffer( '/notcurrent', number = 1 )
+  with MockVimBuffers( [ current_buffer, other_buffer ], [ current_buffer ] ):
+    vimsupport.SetLocationListsForBuffer( 1, diagnostics )
 
-  # We asked for a buffer which is not current, so we find the window
+  vim_eval.assert_not_called()
+
+
+@patch( 'vim.eval', new_callable = ExtendedMock, side_effect = [ -1, 1 ] )
+def SetLocationListsForBuffer_MultipleWindows_test( vim_eval ):
+  diagnostics = [ {
+    'bufnr': 3,
+    'filename': 'some_filename',
+    'lnum': 5,
+    'col': 22,
+    'type': 'E',
+    'valid': 1
+  } ]
+  current_buffer = VimBuffer( '/test', number = 3 )
+  other_buffer = VimBuffer( '/notcurrent', number = 1 )
+  with MockVimBuffers( [ current_buffer, other_buffer ],
+                       [ current_buffer, other_buffer ] ):
+    vimsupport.SetLocationListsForBuffer( 1, diagnostics )
+
   vim_eval.assert_has_exact_calls( [
-    call( 'bufwinnr(1)' ), # returns -1 due to side_effect
-    call( 'setloclist( 0, {0} )'.format( json.dumps( diagnostics ) ) )
+    call( 'setloclist( 2, {0} )'.format( json.dumps( diagnostics ) ) )
   ] )
 
 
@@ -118,8 +126,8 @@ def SetLocationList_test( vim_eval ):
     'type': 'E',
     'valid': 1
   } ]
-  current_buffer = VimBuffer( '/test', number = 3, window = 7 )
-  with MockVimBuffers( [ current_buffer ], current_buffer, ( 1, 1 ) ):
+  current_buffer = VimBuffer( '/test', number = 3 )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ], ( 1, 1 ) ):
     vimsupport.SetLocationList( diagnostics )
 
   vim_eval.assert_has_calls( [
@@ -137,10 +145,10 @@ def SetLocationList_NotCurrent_test( vim_eval ):
     'type': 'E',
     'valid': 1
   } ]
-  current_buffer = VimBuffer( '/test', number = 3, window = 7 )
-  other_buffer = VimBuffer( '/notcurrent', number = 1, window = 8 )
+  current_buffer = VimBuffer( '/test', number = 3 )
+  other_buffer = VimBuffer( '/notcurrent', number = 1 )
   with MockVimBuffers( [ current_buffer, other_buffer ],
-                       current_buffer,
+                       [ current_buffer, other_buffer ],
                        ( 1, 1 ) ):
     vimsupport.SetLocationList( diagnostics )
 
@@ -165,13 +173,26 @@ def OpenLocationList_test( vim_command, fitting_height, variable_exists ):
   variable_exists.assert_called_once_with( '#User#YcmLocationOpened' )
 
 
-@patch( 'ycm.vimsupport.GetIntValue', return_value = 120 )
 @patch( 'vim.command' )
-def SetFittingHeightForCurrentWindow_test( vim_command, *args ):
-  # Create a buffer with one line that is longer than the window width.
+def SetFittingHeightForCurrentWindow_LineWrapOn_test( vim_command, *args ):
+  # Create a two lines buffer whose first line is longer than the window width.
   current_buffer = VimBuffer( 'buffer',
-                              contents = [ 'a' * 140 ] )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+                              contents = [ 'a' * 140, 'b' * 80 ] )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
+    vim.current.window.width = 120
+    vim.current.window.options[ 'wrap' ] = True
+    vimsupport.SetFittingHeightForCurrentWindow()
+  vim_command.assert_called_once_with( '3wincmd _' )
+
+
+@patch( 'vim.command' )
+def SetFittingHeightForCurrentWindow_LineWrapOff_test( vim_command, *args ):
+  # Create a two lines buffer whose first line is longer than the window width.
+  current_buffer = VimBuffer( 'buffer',
+                              contents = [ 'a' * 140, 'b' * 80 ] )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
+    vim.current.window.width = 120
+    vim.current.window.options[ 'wrap' ] = False
     vimsupport.SetFittingHeightForCurrentWindow()
   vim_command.assert_called_once_with( '2wincmd _' )
 
@@ -182,6 +203,7 @@ def AssertBuffersAreEqualAsBytes( result_buffer, expected_buffer ):
     eq_( ToBytes( result_line ), ToBytes( expected_line ) )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Repl_1_test():
   # Replace with longer range
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -204,6 +226,7 @@ def ReplaceChunk_SingleLine_Repl_1_test():
                                 result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Repl_2_test():
   # Replace with shorter range
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -213,6 +236,7 @@ def ReplaceChunk_SingleLine_Repl_2_test():
   AssertBuffersAreEqualAsBytes( [ 'This is a test' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Repl_3_test():
   # Replace with equal range
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -222,6 +246,7 @@ def ReplaceChunk_SingleLine_Repl_3_test():
   AssertBuffersAreEqualAsBytes( [ 'This be a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Add_1_test():
   # Insert at start
   result_buffer = VimBuffer( 'buffer', contents = [ 'is a string' ] )
@@ -231,6 +256,7 @@ def ReplaceChunk_SingleLine_Add_1_test():
   AssertBuffersAreEqualAsBytes( [ 'This is a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Add_2_test():
   # Insert at end
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a ' ] )
@@ -240,6 +266,7 @@ def ReplaceChunk_SingleLine_Add_2_test():
   AssertBuffersAreEqualAsBytes( [ 'This is a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Add_3_test():
   # Insert in the middle
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -249,6 +276,7 @@ def ReplaceChunk_SingleLine_Add_3_test():
   AssertBuffersAreEqualAsBytes( [ 'This is not a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Del_1_test():
   # Delete from start
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -258,6 +286,7 @@ def ReplaceChunk_SingleLine_Del_1_test():
   AssertBuffersAreEqualAsBytes( [ 'is a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Del_2_test():
   # Delete from end
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is a string' ] )
@@ -267,6 +296,7 @@ def ReplaceChunk_SingleLine_Del_2_test():
   AssertBuffersAreEqualAsBytes( [ 'This is a' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Del_3_test():
   # Delete from middle
   result_buffer = VimBuffer( 'buffer', contents = [ 'This is not a string' ] )
@@ -276,6 +306,7 @@ def ReplaceChunk_SingleLine_Del_3_test():
   AssertBuffersAreEqualAsBytes( [ 'This is a string' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Unicode_ReplaceUnicodeChars_test():
   # Replace Unicode characters.
   result_buffer = VimBuffer(
@@ -287,6 +318,7 @@ def ReplaceChunk_SingleLine_Unicode_ReplaceUnicodeChars_test():
                                  result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Unicode_ReplaceAfterUnicode_test():
   # Replace ASCII characters after Unicode characters in the line.
   result_buffer = VimBuffer(
@@ -298,6 +330,7 @@ def ReplaceChunk_SingleLine_Unicode_ReplaceAfterUnicode_test():
                                  result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleLine_Unicode_Grown_test():
   # Replace ASCII characters after Unicode characters in the line.
   result_buffer = VimBuffer( 'buffer', contents = [ 'a' ] )
@@ -307,6 +340,7 @@ def ReplaceChunk_SingleLine_Unicode_Grown_test():
   AssertBuffersAreEqualAsBytes( [ 'å' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_RemoveSingleLine_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -318,6 +352,7 @@ def ReplaceChunk_RemoveSingleLine_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleToMultipleLines_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -339,6 +374,7 @@ def ReplaceChunk_SingleToMultipleLines_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleToMultipleLines2_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -353,6 +389,7 @@ def ReplaceChunk_SingleToMultipleLines2_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleToMultipleLines3_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -367,6 +404,7 @@ def ReplaceChunk_SingleToMultipleLines3_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleToMultipleLinesReplace_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -381,6 +419,7 @@ def ReplaceChunk_SingleToMultipleLinesReplace_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SingleToMultipleLinesReplace_2_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -403,6 +442,7 @@ def ReplaceChunk_SingleToMultipleLinesReplace_2_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_MultipleLinesToSingleLine_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -433,6 +473,7 @@ def ReplaceChunk_MultipleLinesToSingleLine_test():
                                   'ddaa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_MultipleLinesToSameMultipleLines_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -447,6 +488,7 @@ def ReplaceChunk_MultipleLinesToSameMultipleLines_test():
                                   'aDe' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_MultipleLinesToMoreMultipleLines_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -462,6 +504,7 @@ def ReplaceChunk_MultipleLinesToMoreMultipleLines_test():
                                   'aDe' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_MultipleLinesToLessMultipleLines_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -475,6 +518,7 @@ def ReplaceChunk_MultipleLinesToLessMultipleLines_test():
                                   'aDe' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_MultipleLinesToEvenLessMultipleLines_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -487,6 +531,7 @@ def ReplaceChunk_MultipleLinesToEvenLessMultipleLines_test():
                                   'bFDe' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_SpanBufferEdge_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -499,6 +544,7 @@ def ReplaceChunk_SpanBufferEdge_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_DeleteTextInLine_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -510,6 +556,7 @@ def ReplaceChunk_DeleteTextInLine_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_AddTextInLine_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -522,6 +569,7 @@ def ReplaceChunk_AddTextInLine_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_ReplaceTextInLine_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'aAa',
                                                     'aBa',
@@ -534,6 +582,7 @@ def ReplaceChunk_ReplaceTextInLine_test():
                                   'aCa' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_NewlineChunk_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'first line',
                                                     'second line' ] )
@@ -544,14 +593,28 @@ def ReplaceChunk_NewlineChunk_test():
                                   'second line' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunk_BeyondEndOfFile_test():
   result_buffer = VimBuffer( 'buffer', contents = [ 'first line',
                                                     'second line' ] )
-
   start, end = _BuildLocations( 1, 11, 3, 1 )
   vimsupport.ReplaceChunk( start, end, '\n', result_buffer )
 
   AssertBuffersAreEqualAsBytes( [ 'first line' ], result_buffer )
+
+
+@patch( 'vim.current.window.cursor', ( 1, 3 ) )
+def ReplaceChunk_CursorPosition_test():
+  result_buffer = VimBuffer( 'buffer', contents = [ 'bar' ] )
+  start, end = _BuildLocations( 1, 1, 1, 1 )
+  vimsupport.ReplaceChunk( start,
+                           end,
+                           'xyz\nfoo',
+                           result_buffer )
+
+  AssertBuffersAreEqualAsBytes( [ 'xyz', 'foobar' ], result_buffer )
+  # Cursor line is 0-based.
+  assert_that( vimsupport.CurrentLineAndColumn(), contains( 1, 6 ) )
 
 
 def _BuildLocations( start_line, start_column, end_line, end_column ):
@@ -564,6 +627,7 @@ def _BuildLocations( start_line, start_column, end_line, end_column ):
   }
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_SortedChunks_test():
   chunks = [
     _BuildChunk( 1, 4, 1, 4, '(' ),
@@ -576,6 +640,7 @@ def ReplaceChunksInBuffer_SortedChunks_test():
   AssertBuffersAreEqualAsBytes( [ 'CT<(10 >> 2)> ct' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_UnsortedChunks_test():
   chunks = [
     _BuildChunk( 1, 11, 1, 11, ')' ),
@@ -588,6 +653,7 @@ def ReplaceChunksInBuffer_UnsortedChunks_test():
   AssertBuffersAreEqualAsBytes( [ 'CT<(10 >> 2)> ct' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_LineOverlappingChunks_test():
   chunks = [
     _BuildChunk( 1, 11, 2, 1, '\n    ' ),
@@ -607,6 +673,7 @@ def ReplaceChunksInBuffer_LineOverlappingChunks_test():
                                   '    fourth line' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_OutdentChunks_test():
   chunks = [
     _BuildChunk( 1,  1, 1, 5, '  ' ),
@@ -624,6 +691,7 @@ def ReplaceChunksInBuffer_OutdentChunks_test():
                                   '  third line' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_OneLineIndentingChunks_test():
   chunks = [
     _BuildChunk( 1,  8, 2,  1, '\n ' ),
@@ -643,6 +711,7 @@ def ReplaceChunksInBuffer_OneLineIndentingChunks_test():
                                   '}' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 def ReplaceChunksInBuffer_SameLocation_test():
   chunks = [
     _BuildChunk( 1, 1, 1, 1, 'this ' ),
@@ -656,6 +725,7 @@ def ReplaceChunksInBuffer_SameLocation_test():
   AssertBuffersAreEqualAsBytes( [ 'this is pure folly' ], result_buffer )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.VariableExists', return_value = False )
 @patch( 'ycm.vimsupport.SetFittingHeightForCurrentWindow' )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename',
@@ -737,6 +807,7 @@ def ReplaceChunks_SingleFile_Open_test( vim_command,
   ] )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.VariableExists', return_value = False )
 @patch( 'ycm.vimsupport.SetFittingHeightForCurrentWindow' )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename',
@@ -844,6 +915,7 @@ def ReplaceChunks_SingleFile_NotOpen_test( vim_command,
   ] )
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.VariableExists', return_value = False )
 @patch( 'ycm.vimsupport.SetFittingHeightForCurrentWindow' )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename',
@@ -941,6 +1013,7 @@ def ReplaceChunks_SingleFile_NotOpen_Silent_test(
   post_vim_message.assert_not_called()
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename',
         side_effect = [ -1, -1, 1 ],
         new_callable = ExtendedMock )
@@ -1020,6 +1093,7 @@ def ReplaceChunks_User_Declines_To_Open_File_test(
   post_vim_message.assert_not_called()
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename',
         side_effect = [ -1, -1, 1 ],
         new_callable = ExtendedMock )
@@ -1097,6 +1171,7 @@ def ReplaceChunks_User_Aborts_Opening_File_test(
   post_vim_message.assert_not_called()
 
 
+@patch( 'vim.current.window.cursor', ( 1, 1 ) )
 @patch( 'ycm.vimsupport.VariableExists', return_value = False )
 @patch( 'ycm.vimsupport.SetFittingHeightForCurrentWindow' )
 @patch( 'ycm.vimsupport.GetBufferNumberForFilename', side_effect = [
@@ -1264,7 +1339,7 @@ def GetDiagnosticMatchPattern_ErrorInMiddleOfLine_test():
   with patch( 'vim.current.buffer', current_buffer ):
     assert_that(
       vimsupport.GetDiagnosticMatchPattern( 1, 16, 1, 21 ),
-      equal_to( '\%1l\%16c\_.\{-}\%1l\%21c' )
+      equal_to( '\\%1l\\%16c\\_.\\{-}\\%1l\\%21c' )
     )
 
 
@@ -1277,7 +1352,7 @@ def AddDiagnosticSyntaxMatch_WarningAtEndOfLine_test():
   with patch( 'vim.current.buffer', current_buffer ):
     assert_that(
       vimsupport.GetDiagnosticMatchPattern( 1, 16, 1, 23 ),
-      equal_to( '\%1l\%16c\_.\{-}\%1l\%23c' )
+      equal_to( '\\%1l\\%16c\\_.\\{-}\\%1l\\%23c' )
     )
 
 
@@ -1290,7 +1365,7 @@ def AddDiagnosticSyntaxMatch_UnicodeAtEndOfLine_test():
   with patch( 'vim.current.buffer', current_buffer ):
     assert_that(
       vimsupport.GetDiagnosticMatchPattern( 1, 16, 1, 19 ),
-      equal_to( '\%1l\%16c\_.\{-}\%1l\%19c' )
+      equal_to( '\\%1l\\%16c\\_.\\{-}\\%1l\\%19c' )
     )
 
 
@@ -1373,24 +1448,21 @@ def WriteToPreviewWindow_JumpFail_MultiLine_test( vim_current, vim_command ):
 
 
 def BufferIsVisibleForFilename_test():
-  vim_buffers = [
-    VimBuffer( 'visible_filename', number = 1, window = 1 ),
-    VimBuffer( 'hidden_filename', number = 2, window = None )
-  ]
+  visible_buffer = VimBuffer( 'visible_filename', number = 1 )
+  hidden_buffer = VimBuffer( 'hidden_filename', number = 2 )
 
-  with patch( 'vim.buffers', vim_buffers ):
+  with MockVimBuffers( [ visible_buffer, hidden_buffer ], [ visible_buffer ] ):
     eq_( vimsupport.BufferIsVisibleForFilename( 'visible_filename' ), True )
     eq_( vimsupport.BufferIsVisibleForFilename( 'hidden_filename' ), False )
     eq_( vimsupport.BufferIsVisibleForFilename( 'another_filename' ), False )
 
 
 def CloseBuffersForFilename_test():
-  vim_buffers = [
-    VimBuffer( 'some_filename', number = 2 ),
-    VimBuffer( 'some_filename', number = 5 )
-  ]
+  current_buffer = VimBuffer( 'some_filename', number = 2 )
+  other_buffer = VimBuffer( 'some_filename', number = 5 )
 
-  with MockVimBuffers( vim_buffers, vim_buffers[ 0 ] ) as vim:
+  with MockVimBuffers( [ current_buffer, other_buffer ],
+                       [ current_buffer ] ) as vim:
     vimsupport.CloseBuffersForFilename( 'some_filename' )
 
   assert_that( vim.buffers, empty() )
@@ -1555,7 +1627,7 @@ def SelectFromList_Negative_test( vim_eval ):
 
 def Filetypes_IntegerFiletype_test():
   current_buffer = VimBuffer( 'buffer', number = 1, filetype = '42' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
     assert_that( vimsupport.CurrentFiletypes(), contains( '42' ) )
     assert_that( vimsupport.GetBufferFiletypes( 1 ), contains( '42' ) )
     assert_that( vimsupport.FiletypesForBuffer( current_buffer ),
@@ -1571,6 +1643,7 @@ def InsertNamespace_insert_test( vim_current, *args ):
                '',
                '  int taco = Math' ]
   vim_current.buffer = VimBuffer( '', contents = contents )
+  vim_current.window.cursor = ( 1, 1 )
 
   vimsupport.InsertNamespace( 'System' )
 
@@ -1593,6 +1666,7 @@ def InsertNamespace_append_test( vim_current, *args ):
                '    int taco;',
                '    List salad = new List' ]
   vim_current.buffer = VimBuffer( '', contents = contents )
+  vim_current.window.cursor = ( 1, 1 )
 
   vimsupport.InsertNamespace( 'System.Collections' )
 
@@ -1606,15 +1680,17 @@ def InsertNamespace_append_test( vim_current, *args ):
   AssertBuffersAreEqualAsBytes( expected_buffer, vim_current.buffer )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_SameFile_SameBuffer_NoSwapFile_test( vim_command ):
   # No 'u' prefix for the current buffer name string to simulate Vim returning
   # bytes on Python 2 but unicode on Python 3.
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ) as vim:
-    vimsupport.JumpToLocation( os.path.realpath( u'uni¢𐍈d€' ), 2, 5 )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
+    vimsupport.JumpToLocation( os.path.realpath( u'uni¢𐍈d€' ),
+                               2,
+                               5,
+                               'aboveleft',
+                               'same-buffer' )
 
     assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
     vim_command.assert_has_exact_calls( [
@@ -1623,137 +1699,230 @@ def JumpToLocation_SameFile_SameBuffer_NoSwapFile_test( vim_command ):
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_DifferentFile_SameBuffer_Unmodified_test( vim_command ):
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ) as vim:
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name, 2, 5, 'belowright', 'same-buffer' )
 
     assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps edit {0}'.format( target_name ) ),
+      call( u'keepjumps belowright edit {0}'.format( target_name ) ),
       call( 'normal! zz' )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_DifferentFile_SameBuffer_Modified_CannotHide_test(
     vim_command ):
 
   current_buffer = VimBuffer( 'uni¢𐍈d€', modified = True )
-  with MockVimBuffers( [ current_buffer ], current_buffer ) as vim:
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name, 2, 5, 'botright', 'same-buffer' )
 
     assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps split {0}'.format( target_name ) ),
+      call( u'keepjumps botright split {0}'.format( target_name ) ),
       call( 'normal! zz' )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_DifferentFile_SameBuffer_Modified_CanHide_test(
     vim_command ):
 
   current_buffer = VimBuffer( 'uni¢𐍈d€', modified = True, bufhidden = "hide" )
-  with MockVimBuffers( [ current_buffer ], current_buffer ) as vim:
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name, 2, 5, 'leftabove', 'same-buffer' )
 
     assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps edit {0}'.format( target_name ) ),
+      call( u'keepjumps leftabove edit {0}'.format( target_name ) ),
       call( 'normal! zz' )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command',
         side_effect = [ None, VimError( 'Unknown code' ), None ] )
 def JumpToLocation_DifferentFile_SameBuffer_SwapFile_Unexpected_test(
     vim_command ):
 
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
     assert_that(
       calling( vimsupport.JumpToLocation ).with_args(
-          os.path.realpath( u'different_uni¢𐍈d€' ), 2, 5 ),
+        os.path.realpath( u'different_uni¢𐍈d€' ),
+        2,
+        5,
+        'rightbelow',
+        'same-buffer' ),
       raises( VimError, 'Unknown code' )
     )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command',
         new_callable = ExtendedMock,
         side_effect = [ None, VimError( 'E325' ), None ] )
 def JumpToLocation_DifferentFile_SameBuffer_SwapFile_Quit_test( vim_command ):
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name, 2, 5, 'topleft', 'same-buffer' )
 
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps edit {0}'.format( target_name ) )
+      call( u'keepjumps topleft edit {0}'.format( target_name ) )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'same-buffer' } )
 @patch( 'vim.command',
         new_callable = ExtendedMock,
         side_effect = [ None, KeyboardInterrupt, None ] )
 def JumpToLocation_DifferentFile_SameBuffer_SwapFile_Abort_test( vim_command ):
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name, 2, 5, 'vertical', 'same-buffer' )
 
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps edit {0}'.format( target_name ) )
+      call( u'keepjumps vertical edit {0}'.format( target_name ) )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'new-or-existing-tab' } )
+@patch( 'vim.command', new_callable = ExtendedMock )
+def JumpToLocation_DifferentFile_Split_CurrentTab_NotAlreadyOpened_test(
+    vim_command ):
+
+  current_buffer = VimBuffer( 'uni¢𐍈d€' )
+  current_window = MagicMock( buffer = current_buffer )
+  current_tab = MagicMock( windows = [ current_window ] )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ) as vim:
+    vim.current.tabpage = current_tab
+
+    target_name = os.path.realpath( u'different_uni¢𐍈d€' )
+
+    vimsupport.JumpToLocation( target_name,
+                               2,
+                               5,
+                               'aboveleft',
+                               'split-or-existing-window' )
+
+    vim_command.assert_has_exact_calls( [
+      call( 'normal! m\'' ),
+      call( u'keepjumps aboveleft split {0}'.format( target_name ) ),
+      call( 'normal! zz' )
+    ] )
+
+
+@patch( 'vim.command', new_callable = ExtendedMock )
+def JumpToLocation_DifferentFile_Split_CurrentTab_AlreadyOpened_test(
+    vim_command ):
+
+  current_buffer = VimBuffer( 'uni¢𐍈d€' )
+  different_buffer = VimBuffer( 'different_uni¢𐍈d€' )
+  current_window = MagicMock( buffer = current_buffer )
+  different_window = MagicMock( buffer = different_buffer )
+  current_tab = MagicMock( windows = [ current_window, different_window ] )
+  with MockVimBuffers( [ current_buffer, different_buffer ],
+                       [ current_buffer ] ) as vim:
+    vim.current.tabpage = current_tab
+
+    vimsupport.JumpToLocation( os.path.realpath( u'different_uni¢𐍈d€' ),
+                               2,
+                               5,
+                               'belowright',
+                               'split-or-existing-window' )
+
+    assert_that( vim.current.tabpage, equal_to( current_tab ) )
+    assert_that( vim.current.window, equal_to( different_window ) )
+    assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
+    vim_command.assert_has_exact_calls( [
+      call( 'normal! m\'' ),
+      call( 'normal! zz' )
+    ] )
+
+
+@patch( 'vim.command', new_callable = ExtendedMock )
+def JumpToLocation_DifferentFile_Split_AllTabs_NotAlreadyOpened_test(
+    vim_command ):
+
+  current_buffer = VimBuffer( 'uni¢𐍈d€' )
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
+    target_name = os.path.realpath( u'different_uni¢𐍈d€' )
+
+    vimsupport.JumpToLocation( target_name,
+                               2,
+                               5,
+                               'tab',
+                               'split-or-existing-window' )
+
+    vim_command.assert_has_exact_calls( [
+      call( 'normal! m\'' ),
+      call( u'keepjumps tab split {0}'.format( target_name ) ),
+      call( 'normal! zz' )
+    ] )
+
+
+@patch( 'vim.command', new_callable = ExtendedMock )
+def JumpToLocation_DifferentFile_Split_AllTabs_AlreadyOpened_test(
+    vim_command ):
+
+  current_buffer = VimBuffer( 'uni¢𐍈d€' )
+  different_buffer = VimBuffer( 'different_uni¢𐍈d€' )
+  current_window = MagicMock( buffer = current_buffer )
+  different_window = MagicMock( buffer = different_buffer )
+  current_tab = MagicMock( windows = [ current_window, different_window ] )
+  with patch( 'vim.tabpages', [ current_tab ] ):
+    with MockVimBuffers( [ current_buffer, different_buffer ],
+                         [ current_buffer ] ) as vim:
+      vimsupport.JumpToLocation( os.path.realpath( u'different_uni¢𐍈d€' ),
+                                 2,
+                                 5,
+                                 'tab',
+                                 'split-or-existing-window' )
+
+      assert_that( vim.current.tabpage, equal_to( current_tab ) )
+      assert_that( vim.current.window, equal_to( different_window ) )
+      assert_that( vim.current.window.cursor, equal_to( ( 2, 4 ) ) )
+      vim_command.assert_has_exact_calls( [
+        call( 'normal! m\'' ),
+        call( 'normal! zz' )
+      ] )
+
+
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_DifferentFile_NewOrExistingTab_NotAlreadyOpened_test(
     vim_command ):
 
   current_buffer = VimBuffer( 'uni¢𐍈d€' )
-  with MockVimBuffers( [ current_buffer ], current_buffer ):
+  with MockVimBuffers( [ current_buffer ], [ current_buffer ] ):
     target_name = os.path.realpath( u'different_uni¢𐍈d€' )
 
-    vimsupport.JumpToLocation( target_name, 2, 5 )
+    vimsupport.JumpToLocation( target_name,
+                               2,
+                               5,
+                               'aboveleft vertical',
+                               'new-or-existing-tab' )
 
     vim_command.assert_has_exact_calls( [
       call( 'normal! m\'' ),
-      call( u'keepjumps tabedit {0}'.format( target_name ) ),
+      call( u'keepjumps aboveleft vertical tabedit {0}'.format( target_name ) ),
       call( 'normal! zz' )
     ] )
 
 
-@patch( 'ycmd.user_options_store._USER_OPTIONS',
-        { 'goto_buffer_command': 'new-or-existing-tab' } )
 @patch( 'vim.command', new_callable = ExtendedMock )
 def JumpToLocation_DifferentFile_NewOrExistingTab_AlreadyOpened_test(
     vim_command ):
@@ -1765,9 +1934,12 @@ def JumpToLocation_DifferentFile_NewOrExistingTab_AlreadyOpened_test(
   current_tab = MagicMock( windows = [ current_window, different_window ] )
   with patch( 'vim.tabpages', [ current_tab ] ):
     with MockVimBuffers( [ current_buffer, different_buffer ],
-                         current_buffer ) as vim:
+                         [ current_buffer ] ) as vim:
       vimsupport.JumpToLocation( os.path.realpath( u'different_uni¢𐍈d€' ),
-                                 2, 5 )
+                                 2,
+                                 5,
+                                 'belowright tab',
+                                 'new-or-existing-tab' )
 
       assert_that( vim.current.tabpage, equal_to( current_tab ) )
       assert_that( vim.current.window, equal_to( different_window ) )
@@ -1776,3 +1948,12 @@ def JumpToLocation_DifferentFile_NewOrExistingTab_AlreadyOpened_test(
         call( 'normal! m\'' ),
         call( 'normal! zz' )
       ] )
+
+
+@patch( 'ycm.tests.test_utils.VIM_VERSION', Version( 7, 4, 1578 ) )
+def VimVersionAtLeast_test():
+  assert_that( vimsupport.VimVersionAtLeast( '7.3.414' ) )
+  assert_that( vimsupport.VimVersionAtLeast( '7.4.1578' ) )
+  assert_that( not vimsupport.VimVersionAtLeast( '7.4.1579' ) )
+  assert_that( not vimsupport.VimVersionAtLeast( '7.4.1898' ) )
+  assert_that( not vimsupport.VimVersionAtLeast( '8.1.278' ) )
