@@ -13,3 +13,10 @@
 [submodule "fzf"]
 	path = ./submodules/fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule "linediff"]
+	path = ./submodules/linediff
+	url = https://github.com/AndrewRadev/linediff.vim.git
+[submodule "fonts"]
+	path = ./submodules/fonts
+	url = https://github.com/powerline/fonts.git
+
