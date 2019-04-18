@@ -1,2 +1,7 @@
 nvim/plugged/*
-submodules/*
+./scm_breeze
+./splitjoin
+./.fzf
+./linediff.vim.git
+./.bash-git-prompt
+./fonts
