@@ -35,6 +35,7 @@ ln -sf ~/dev/git/dotfiles/bin ~/bin
 ln -sf ~/dev/git/dotfiles/.bash-git-prompt ~/.bash-git-prompt
 ln -sf ~/dev/git/dotfiles/.scm_breeze ~/.scm_breeze
 ln -sf ~/dev/git/dotfiles/.gitconfig ~/.gitconfig
+ln -sf ~/dev/git/dotfiles/.git-prompt-colors.sh ~/.git-prompt-colors.sh
 
 # Patch monokai colors
 cp ./monokai.vim ./nvim/plugged/vim-monokai/colors/

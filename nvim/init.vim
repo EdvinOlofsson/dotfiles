@@ -50,8 +50,8 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Gitwrapper for airline
 Plug 'tpope/vim-fugitive'
 
-" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/dev/git/dotfiles/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
 
 Plug 'vim-scripts/Tabmerge'
 
@@ -209,6 +209,7 @@ set nobackup
 set noswapfile
 set encoding=utf-8
 set suffixesadd+=.js,.jsx
+set path=.,/usr/include,,$PWD/src,$PWD/test/unittests/,$PWD/test/functional/
 set wildmenu
 set wildmode=list:longest,full
 set showcmd
@@ -267,13 +268,13 @@ nnoremap <Leader>cfa ^f(<Right>ct,)
 nnoremap <Leader>cla ^f)F,<Right>ct)
 imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>/xxx<CR><C-n><C-n>c
 imap <Leader>iC console.log('');<Left><Left><Left>
-inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+inoremap <Leader>id describe('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 " inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ii it('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 " inoremap <Leader>ii it('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ib before(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ib before(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
 " inoremap <Leader>ib before(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
-inoremap <Leader>ia after(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ia after(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
 " inoremap <Leader>ia after(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
 nmap <Leader>id o,id
 nmap <Leader>ii o,ii

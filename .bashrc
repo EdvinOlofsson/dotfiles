@@ -147,7 +147,8 @@ GIT_PROMPT_ONLY_IN_REPO=0
 GIT_PROMPT_IGNORE_STASH=1
 GIT_PROMPT_FETCH_REMOTE_STATUS=1
 GIT_PROMPT_SHOW_UNTRACKED_FILES=normal
-GIT_PROMPT_THEME=Mytheme
+GIT_PROMPT_THEME=Custom
+GIT_PROMPT_THEME_FILE=~/dev/git/dotfiles/.git-prompt-colors.sh
 
 source ~/.bash-git-prompt/gitprompt.sh
 source ~/.scm_breeze/scm_breeze.sh
