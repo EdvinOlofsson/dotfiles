@@ -55,6 +55,8 @@ Plug 'junegunn/fzf', { 'dir': '~/dev/git/dotfiles/.fzf', 'do': './install --all'
 
 Plug 'vim-scripts/Tabmerge'
 
+Plug 'jremmen/vim-ripgrep'
+
 call plug#end()
 
 " ===== My plugin settings =====
@@ -157,7 +159,7 @@ let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=1
 let g:syntastic_cursor_column=0
 let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/confd-6.7/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
+let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
 let g:syntastic_enable_highlighting=0
 let g:syntastic_error_symbol='💩'
 let g:syntastic_style_error_symbol='💩'
@@ -197,6 +199,7 @@ let g:tmuxline_preset = {
 
 " fzf
 map <Leader>z :FZF<CR>
+map <Leader>f :FZF<CR>
 
 " ===== my vim settings =====
 filetype plugin indent on
@@ -244,7 +247,7 @@ let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-nmap     <silent> <ESC> :noh<CR>:pclose<CR>
+nmap     <silent> <ESC> :noh<CR>:pclose<CR>:ccl<CR>:lcl<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
 

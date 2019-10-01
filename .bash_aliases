@@ -50,7 +50,10 @@ alias ff=ffile
 
 #Abbrevations for sourcing the most common CONFD/NSO builds
 src() {
-    if [ $1 = 'tailf' ]; then
+    if [ $1 = 'release' ]; then
+        echo ~/dev/releases/nso-$2/ncsrc
+        source ~/dev/releases/nso-$2/ncsrc
+    elif [ $1 = 'tailf' ]; then
         source ~/dev/git/tailf/env.sh
     elif [ $1 = 'trunk' ]; then
         source ~/dev/git/tailf/env.sh
@@ -76,6 +79,10 @@ src() {
         source  ~/dev/git/confd-6.8/env.sh
     elif [ $1 = '71' ]; then
         source  ~/dev/git/confd-7.1/env.sh
+    elif [ $1 = '72' ]; then
+        source  ~/dev/git/confd-7.2/env.sh
+    elif [ $1 = '73' ]; then
+        source  ~/dev/git/confd-7.3/env.sh
     else
         echo "Failed to source $1"
     fi
