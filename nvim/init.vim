@@ -56,6 +56,7 @@ Plug 'junegunn/fzf', { 'dir': '~/dev/git/dotfiles/.fzf', 'do': './install --all'
 Plug 'vim-scripts/Tabmerge'
 
 Plug 'jremmen/vim-ripgrep'
+Plug 'yssl/QFEnter'
 
 call plug#end()
 
@@ -247,7 +248,7 @@ let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-nmap     <silent> <ESC> :noh<CR>:pclose<CR>:ccl<CR>:lcl<CR>
+nmap     <silent> <ESC> :noh<CR>:pclose<CR>:ccl<CR>:lcl<CR>:NERDTreeClose<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
 

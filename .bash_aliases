@@ -21,32 +21,16 @@ alias confd64='cd ~/dev/git/confd-6.4/'
 alias confd65='cd ~/dev/git/confd-6.5/'
 alias confd66='cd ~/dev/git/confd-6.6/'
 alias confd67='cd ~/dev/git/confd-6.7/'
+
 alias dev='cd ~/dev/'
+alias dot='cd ~/dev/git/dotfiles'
 alias la='ls -la'
 alias pycli='ipython ~/dev/git/ncs_pycli/ncs_pycli'
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.bashrc'
 alias rbashrc='. ~/.bashrc'
 alias bashal='vim ~/.bash_aliases'
-alias tmuxconf='vim ~/.tmux.conf'
-alias shuffle='play ~/Downloads/Music/MelbournShuffle.mp3'
 
-myfind() {
-    find . -name "$1" | grep "$1"
-}
-alias f=myfind
-
-#Abbrevation for finding a directory
-fdir() {
-    find . -name "$1" -type d | grep "$1"
-}
-alias fd=fdir
-
-#Abbrevation for finding file(-ending)
-ffile() {
-    find . -name "*.$1" | grep "$1"
-}
-alias ff=ffile
 
 #Abbrevations for sourcing the most common CONFD/NSO builds
 src() {
@@ -90,29 +74,3 @@ src() {
     echo "which ncs  : $NCS_DIR"
 }
 alias src=src
-
-#Abbrevation for cg on .js files
-cgjs() {
-    cg $1 "*.js"
-}
-alias cgjs=cgjs
-
-#Abbrevation for a beep sound
-beeptest() {
-    ( \speaker-test --frequency $1 --test sine )&
-    pid=$!
-    \sleep 0.${2}s
-    \kill -9 $pid
-}
-beepboop() {
-    beeptest 800 300 > /dev/null 2>&1 &
-    \sleep 0.2s
-    beeptest 800 300 > /dev/null 2>&1 &
-}
-alias beep=beepboop
-
-#Abbrevation for starting an ssh session to repository.tail-f.com
-sshrepo() {
-    ssh repository.tail-f.com
-}
-alias sshrepo=sshrepo
