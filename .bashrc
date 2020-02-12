@@ -156,3 +156,10 @@ source ~/.scm_breeze/scm_breeze.sh
 [ -s "/home/eolofsso/.scm_breeze/scm_breeze.sh" ] && source "/home/eolofsso/.scm_breeze/scm_breeze.sh"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# export USE_SSL_DIR=/home/eolofsso/openssl-1.0
+export TAILF_OTP_CACHE=~/dev/oto-cache
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

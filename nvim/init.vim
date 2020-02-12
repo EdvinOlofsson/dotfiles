@@ -51,7 +51,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'tpope/vim-fugitive'
 
 Plug 'junegunn/fzf', { 'dir': '~/dev/git/dotfiles/.fzf', 'do': './install --all' }
-" Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf.vim'
 
 Plug 'vim-scripts/Tabmerge'
 
@@ -63,6 +63,7 @@ call plug#end()
 " ===== My plugin settings =====
 let mapleader=","
 set clipboard+=unnamedplus
+exe 'set rtp+=' . $NCS_DIR . "/../lib/webui/webui-one/"
 
 " vim-airline
 set laststatus=2
@@ -104,10 +105,10 @@ let g:airline#extensions#ycm#warning_symbol='w:'
 " Git gutter
 let g:gitgutter_max_signs=1000
 autocmd BufWritePost * GitGutter
-nmap <Leader>hs <Plug>GitGutterStageHunk
-nmap <Leader>hr <Plug>GitGutterUndoHunk
-nmap <Leader>hn <Plug>GitGutterNextHunk
-nmap <Leader>hp <Plug>GitGutterPrevHunk
+nmap <Leader>hs <Plug>(GitGutterStageHunk)
+nmap <Leader>hr <Plug>(GitGutterUndoHunk)
+nmap <Leader>hn <Plug>(GitGutterNextHunk)
+nmap <Leader>hp <Plug>(GitGutterPrevHunk)
 
 " vim-javascript
 let g:javascript_plugin_jsdoc=1
@@ -199,8 +200,32 @@ let g:tmuxline_preset = {
     \ 'z': '#H'}
 
 " fzf
-map <Leader>z :FZF<CR>
-map <Leader>f :FZF<CR>
+function! RG()
+    call inputsave()
+    let match = input({ 'prompt': 'match: ', 'default': './', 'cancelreturn': './' })
+    call inputrestore()
+    execute "Rg '".l:match."'"
+endfunction
+
+function! RGfunctional()
+    call inputsave()
+    let match = input('match: ')
+    call inputrestore()
+    execute "Rg '".l:match."'" './test/functional/'
+endfunction
+
+function! RGunit()
+    call inputsave()
+    let match = input('match: ')
+    call inputrestore()
+    execute "Rg '".l:match."'" './test/unittests/'
+endfunction
+
+map <Leader>Z :FZF <CR>
+map <Leader>z :GFiles ./lib/webui/webui-one/<CR>
+map <Leader>rg :call RG()<CR>
+map <Leader>RGF :call RGfunctional()<CR>
+map <Leader>RGU :call RGunit()<CR>
 
 " ===== my vim settings =====
 filetype plugin indent on
@@ -257,8 +282,8 @@ nnoremap <Leader>W :w!<CR>
 nnoremap <Leader>wq :wq<CR>
 nnoremap <Leader>e :e<CR>k
 nnoremap <Leader>E :e!<CR>k
-nnoremap <Leader>q :q<CR>   
-nnoremap <Leader>Q :q!<CR>   
+nnoremap <Leader>q :bd<CR>
+nnoremap <Leader>Q :q!<CR>
 nnoremap <Leader>r :so ~/.config/nvim/init.vim<CR>:e<CR>
 nnoremap <Leader><Up> :exe "resize +5"<CR>
 nnoremap <Leader><Down> :exe "resize -5"<CR>

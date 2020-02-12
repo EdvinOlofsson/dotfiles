@@ -4,12 +4,21 @@
 sudo apt-get install cgvg
 sudo apt install ruby
 sudo apt install git
+sudo apt install neovim
 
 # Bash Git Prompt
 git clone https://github.com/magicmonty/bash-git-prompt.git ./.bash-git-prompt --depth=1
 # SCM_Breeze
 git clone git://github.com/scmbreeze/scm_breeze.git ./.scm_breeze
 ./.scm_breeze/install.sh
+# nvim config
+ln -sf ~/dev/git/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
+ln -sf ~/dev/git/dotfiles/nvim/plugged ~/.config/nvim/plugged
+ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
+ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
+ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
+ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
+
 # SplitJoin
 git clone git://github.com/AndrewRadev/splitjoin.vim.git ./splitjoin
 cp -r ./splitjoin/plugin/* ./nvim/plugin/
