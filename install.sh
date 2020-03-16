@@ -18,6 +18,7 @@ ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
 ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
 ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
 ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
+ln -sf ~/dev/git/dotfiles/nvim/UltiSnips ~/.config/nvim/UltiSnips
 
 # SplitJoin
 git clone git://github.com/AndrewRadev/splitjoin.vim.git ./splitjoin

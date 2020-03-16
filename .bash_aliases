@@ -31,6 +31,7 @@ alias bashrc='vim ~/.bashrc'
 alias rbashrc='. ~/.bashrc'
 alias bashal='vim ~/.bash_aliases'
 
+alias gd='git diff --color | diff-so-fancy'
 
 #Abbrevations for sourcing the most common CONFD/NSO builds
 src() {

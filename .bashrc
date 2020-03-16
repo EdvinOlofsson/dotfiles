@@ -121,6 +121,8 @@ fi
 ## Custom Scripts ##
 ####################
 
+PATH=~/dev/git/dotfiles/bin:$PATH
+export PATH
 #Load ssh keys
 /usr/bin/keychain $HOME/.ssh/id_rsa
 source $HOME/.keychain/$HOSTNAME-sh

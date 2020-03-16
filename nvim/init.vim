@@ -1,4 +1,5 @@
-" ===== vim-plug ===== 
+" let g:loaded_youcompleteme = 1
+" ===== vim-plug ====
 call plug#begin()
 
 " Status bar for vim
@@ -42,8 +43,8 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'edkolev/tmuxline.vim'
 
 " Tab completion
-" Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py --js-completer' }
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': 'python3 ./install.py --js-completer' }
+" Plug 'Valloric/YouCompleteMe'
 
 Plug 'AndrewRadev/splitjoin.vim'
 
@@ -58,6 +59,10 @@ Plug 'vim-scripts/Tabmerge'
 Plug 'jremmen/vim-ripgrep'
 Plug 'yssl/QFEnter'
 
+Plug 'sirver/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Plug 'ervandew/supertab'
 call plug#end()
 
 " ===== My plugin settings =====
@@ -101,6 +106,26 @@ let g:airline#extensions#tmuxline#enabled=1
 let g:airline#extensions#ycm#enabled=1
 let g:airline#extensions#ycm#error_symbol='e:'
 let g:airline#extensions#ycm#warning_symbol='w:'
+
+" make YCM compatible with UltiSnips
+let g:UltiSnipsExpandTrigger           = '<tab>'
+let g:UltiSnipsJumpForwardTrigger      = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
+let g:ycm_key_list_select_completion   = ['Down']
+let g:ycm_key_list_previous_completion = ['<Up>']
+let g:ycm_use_ultisnips_completer = 1
+
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:ultisnips_javascript = {
+    \ 'keyword-spacing': 'always',
+    \ 'semi': 'always',
+    \ 'space-before-function-paren': 'always',
+    \ }
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+au BufEnter *.snippets :highlight clear snipLeadingSpaces
 
 " Git gutter
 let g:gitgutter_max_signs=1000
@@ -158,11 +183,11 @@ let g:syntastic_mode_map={ 'mode': 'passive', 'active_filetypes': [], 'passive_f
 let g:syntastic_always_populate_loc_list=1
 let g:syntastic_auto_loc_list=1
 let g:syntastic_check_on_open=0
-let g:syntastic_check_on_wq=1
+let g:syntastic_check_on_wq=0
 let g:syntastic_cursor_column=0
 let g:syntastic_javascript_checkers=['eslint']
 let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
-let g:syntastic_enable_highlighting=0
+let g:syntastic_enable_highlighting=1
 let g:syntastic_error_symbol='💩'
 let g:syntastic_style_error_symbol='💩'
 let g:syntastic_warning_symbol='⚠️'
@@ -223,6 +248,7 @@ endfunction
 
 map <Leader>Z :FZF <CR>
 map <Leader>z :GFiles ./lib/webui/webui-one/<CR>
+map <Leader>b :Buffers<CR>
 map <Leader>rg :call RG()<CR>
 map <Leader>RGF :call RGfunctional()<CR>
 map <Leader>RGU :call RGunit()<CR>
@@ -273,7 +299,7 @@ let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-nmap     <silent> <ESC> :noh<CR>:pclose<CR>:ccl<CR>:lcl<CR>:NERDTreeClose<CR>
+nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:NERDTreeClose<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
 

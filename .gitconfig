@@ -3,7 +3,8 @@
         email = eolofsso@cisco.com
 [core]
         editor = vim
-	whitespace = trailing-space,space-before-tab
+        whitespace = trailing-space,space-before-tab
+        pager = diff-so-fancy | less --tabs=4 -RFX
 [merge]
         tool = meld 
         stat = true
@@ -51,3 +52,5 @@
         last = "!f() { git log $1 --pretty=format:'%C(yellow)%h%C(reset) - %s %C(red)(%cn)%C(reset) %C(green)(%cr)%C(reset)'; }; f"
         res = "!f() { git reset HEAD~$1 $2; }; f"
 
+[diff-so-fancy]
+        stripLeadingSymbols = false
