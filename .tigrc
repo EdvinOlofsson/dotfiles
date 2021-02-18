@@ -80,7 +80,7 @@ set pager-view	= line-number:no,interval=5 text
 set stage-view	= line-number:no,interval=5 text
 set log-view	= line-number:no,interval=5 text
 set blob-view	= line-number:no,interval=5 text
-set diff-view	= line-number:no,interval=5 text:yes,commit-title-overflow=no
+set diff-view	= line-number:no,interval=5 text:yes,commit-title-overflow=no,word-diff=color
 
 # UI display settings
 set show-changes		= yes		# Show changes commits in the main view?
@@ -105,7 +105,7 @@ set truncation-delimiter	= ~		# Character drawn for truncations, or "utf-8"
 set reference-format		= [branch] <tag> {remote} ~replace~
 
 # Settings controlling how content is read from Git
-set commit-order		= auto		# Enum: auto, default, topo, date, reverse (main)
+set commit-order		= default		# Enum: auto, default, topo, date, reverse (main)
 set status-show-untracked-dirs	= yes		# Show files in untracked directories? (status)
 set status-show-untracked-files	= yes		# Show untracked files?
 set ignore-space		= no		# Enum: no, all, some, at-eol (diff)

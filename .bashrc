@@ -121,8 +121,7 @@ fi
 ## Custom Scripts ##
 ####################
 
-PATH=~/dev/git/dotfiles/bin:$PATH
-export PATH
+export PATH="$HOME/dev/git/dotfiles/bin:$PATH"
 #Load ssh keys
 /usr/bin/keychain $HOME/.ssh/id_rsa
 source $HOME/.keychain/$HOSTNAME-sh
@@ -153,8 +152,6 @@ GIT_PROMPT_THEME=Custom
 GIT_PROMPT_THEME_FILE=~/dev/git/dotfiles/.git-prompt-colors.sh
 
 source ~/.bash-git-prompt/gitprompt.sh
-source ~/.scm_breeze/scm_breeze.sh
-
 [ -s "/home/eolofsso/.scm_breeze/scm_breeze.sh" ] && source "/home/eolofsso/.scm_breeze/scm_breeze.sh"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

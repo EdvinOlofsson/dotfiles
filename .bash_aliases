@@ -1,4 +1,5 @@
 alias cli='ncs_cli -u admin'
+alias ncs_reset='make -C $CONFDX_DIR/lib/webui/webui-one/ncs reset'
 alias tailf='cd ~/dev/git/tailf/'
 alias one='cd ~/dev/git/tailf/lib/webui/webui-one'
 alias one65='cd ~/dev/git/confd-6.5/lib/webui/webui-one'
@@ -31,7 +32,17 @@ alias bashrc='vim ~/.bashrc'
 alias rbashrc='. ~/.bashrc'
 alias bashal='vim ~/.bash_aliases'
 
-alias gd='git diff --color | diff-so-fancy'
+alias gfoc='git-fzf-checkout.sh'
+
+# alias gd='git diff --color | diff-so-fancy'
+alias ciscovpn='openconnect-sso -s https://ams-vpn-cluster.cisco.com/ssl'
+alias ciscovpn1='openconnect-sso -s https://aer01-hda1-vpn-cluster-1.cisco.com/ssl'
+alias ciscovpn2='openconnect-sso -s https://aer02-hda1-vpn-cluster-2.cisco.com/ssl'
+alias ciscovpn3='openconnect-sso -s https://aer01-hda1-vpn-cluster-3.cisco.com/ssl'
+alias ciscovpn4='openconnect-sso -s https://aer02-hda1-vpn-cluster-4.cisco.com/ssl'
+alias ciscovpn5='openconnect-sso -s https://aer01-hda1-vpn-cluster-5.cisco.com/ssl'
+
+
 
 #Abbrevations for sourcing the most common CONFD/NSO builds
 src() {
@@ -68,6 +79,12 @@ src() {
         source  ~/dev/git/confd-7.2/env.sh
     elif [ $1 = '73' ]; then
         source  ~/dev/git/confd-7.3/env.sh
+    elif [ $1 = '74' ]; then
+        source  ~/dev/git/confd-7.4/env.sh
+    elif [ $1 = '75' ]; then
+        source  ~/dev/git/confd-7.5/env.sh
+    elif [ $1 = '76' ]; then
+        source  ~/dev/git/confd-7.5/env.sh
     else
         echo "Failed to source $1"
     fi

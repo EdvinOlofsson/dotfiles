@@ -34,7 +34,9 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-surround'
 
 " Syntax checker framework amongst other things
-Plug 'vim-syntastic/syntastic'
+" Plug 'vim-syntastic/syntastic'
+
+Plug 'dense-analysis/ale'
 
 " Navigate tmux panes with hjkl
 Plug 'christoomey/vim-tmux-navigator'
@@ -61,6 +63,8 @@ Plug 'yssl/QFEnter'
 
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
+
+Plug 'vimpostor/vim-tpipeline'
 
 " Plug 'ervandew/supertab'
 call plug#end()
@@ -99,7 +103,10 @@ let g:airline#extensions#branch#displayed_head_limit=30
 let g:airline#extensions#branch#empty_message = '!branch'
 let g:airline#extensions#tabline#show_tab_type=1
 let g:airline#extentions#tabline#fnamecollapse=0
-let g:airline#extensions#syntastic#enabled=1
+" let g:airline#extensions#syntastic#enabled=1
+let g:airline#extensions#ale#enabled=1
+let g:airline#extensions#ale#error_symbol='💩'
+let g:airline#extensions#ale#warning_symbol='⚠️'
 let g:airline#extensions#whitespace#mixed_indent_algo=1
 let g:airline#extensions#whitespace#checks=['indent', 'trailing']
 let g:airline#extensions#tmuxline#enabled=1
@@ -134,6 +141,11 @@ nmap <Leader>hs <Plug>(GitGutterStageHunk)
 nmap <Leader>hr <Plug>(GitGutterUndoHunk)
 nmap <Leader>hn <Plug>(GitGutterNextHunk)
 nmap <Leader>hp <Plug>(GitGutterPrevHunk)
+nmap Q <NoP>
+
+nmap <Leader>gs :Gstatus<CR>
+nmap <Leader>gcm :Gcommit --amend<CR>
+nmap <Leader>gps :Gpush --force-with-leas<CR>
 
 " vim-javascript
 let g:javascript_plugin_jsdoc=1
@@ -175,28 +187,28 @@ let g:NERDTreePatternMatchHighlightFullName = 1
 nmap <Leader>sw ysiw
 
 " syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
-let g:syntastic_mode_map={ 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_auto_loc_list=1
-let g:syntastic_check_on_open=0
-let g:syntastic_check_on_wq=0
-let g:syntastic_cursor_column=0
-let g:syntastic_javascript_checkers=['eslint']
-let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
-let g:syntastic_enable_highlighting=1
-let g:syntastic_error_symbol='💩'
-let g:syntastic_style_error_symbol='💩'
-let g:syntastic_warning_symbol='⚠️'
-let g:syntastic_style_warning_symbol='⚠️'
+" let g:syntastic_mode_map={ 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
+" let g:syntastic_always_populate_loc_list=1
+" let g:syntastic_auto_loc_list=1
+" let g:syntastic_check_on_open=0
+" let g:syntastic_check_on_wq=0
+" let g:syntastic_cursor_column=0
+" let g:syntastic_javascript_checkers=['eslint']
+" let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
+" let g:syntastic_enable_highlighting=1
+" let g:syntastic_error_symbol='💩'
+" let g:syntastic_style_error_symbol='💩'
+" let g:syntastic_warning_symbol='⚠️'
+" let g:syntastic_style_warning_symbol='⚠️'
 
-hi link SyntasticErrorSign SignColumn
-hi link SyntasticWarningSign SignColumn
-hi link SyntasticStyleErrorSign SignColumn
-hi link SyntasticStyleWarningSign SignColumn
+" hi link SyntasticErrorSign SignColumn
+" hi link SyntasticWarningSign SignColumn
+" hi link SyntasticStyleErrorSign SignColumn
+" hi link SyntasticStyleWarningSign SignColumn
 
 function! ToggleErrors()
     let old_last_winnr = winnr('$')
@@ -206,6 +218,34 @@ function! ToggleErrors()
         Errors
     endif
 endfunction
+
+" ALE
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\}
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_set_highlights = 0
+let g:ale_set_signs = 1
+let g:ale_fix_on_save = 0
+let g:ale_lint_on_save = 1
+let g:ale_cursor_detail = 0
+let g:ale_virualtext_cursor = 0
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 0
+let g:ale_echo_cursor = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_sign_error='💩'
+let g:ale_sign_style_error='💩'
+let g:ale_sign_warning='💩'
+let g:ale_sign_style_warning='💩'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 1
+nnoremap <Leader>af :ALEFix<CR>
+nnoremap <Leader>al :ALELint<CR>
+nnoremap <Leader>an :ALENext<CR>
+nnoremap <Leader>ap :ALEPrevious<CR>
 
 nnoremap <silent> <Leader>st :call ToggleErrors()<CR>
 nnoremap <Leader>sc :SyntasticCheck<CR>
@@ -246,9 +286,11 @@ function! RGunit()
     execute "Rg '".l:match."'" './test/unittests/'
 endfunction
 
-map <Leader>Z :FZF <CR>
-map <Leader>z :GFiles ./lib/webui/webui-one/<CR>
+map <Leader>Z :FZF .<CR>
+map <Leader>z :GFiles .<CR>
 map <Leader>b :Buffers<CR>
+" Yank Rip Grep. <C-r>+, reads from clipboard
+map <Leader>yrg yiw:Rg <C-r>+<CR>
 map <Leader>rg :call RG()<CR>
 map <Leader>RGF :call RGfunctional()<CR>
 map <Leader>RGU :call RGunit()<CR>
@@ -285,8 +327,8 @@ hi CursorLineNr ctermfg=Green
 hi clear CursorLine
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
-" set listchars=tab:▸\ ,trail:·,eol:¬,space:\ 
-set listchars=tab:▸\ ,trail:·,space:\ 
+" set listchars=tab:▸\ ,trail:·,eol:¬,space:·
+set listchars=tab:▸\ ,trail:·,
 set splitbelow
 set splitright
 set expandtab
@@ -299,7 +341,7 @@ let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:NERDTreeClose<CR>
+nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:NERDTreeClose<CR>:ccl<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
 
@@ -315,22 +357,30 @@ nnoremap <Leader><Up> :exe "resize +5"<CR>
 nnoremap <Leader><Down> :exe "resize -5"<CR>
 nnoremap <Leader><Left> :exe "vertical resize -1"<CR>
 nnoremap <Leader><Right> :exe "vertical resize +1"<CR>
+nnoremap <TAB> >>
+nnoremap <S-TAB> <<
 
+" Visualize Function
 nnoremap <Leader>vf ^<S-v>f{%
-nnoremap <Leader>vF ?{^<S-v>%
+" Add Argument
+nnoremap <Leader>aa ^f)i, 
+" Change All Arguments
 nnoremap <Leader>caa ^f(<Right>ci)
-nnoremap <Leader>cfa ^f(<Right>ct,)
+" Change First Argument
+nnoremap <Leader>cfa ^f(<Right>ct,
+" Change Last Argument
 nnoremap <Leader>cla ^f)F,<Right>ct)
+
 imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>/xxx<CR><C-n><C-n>c
 imap <Leader>iC console.log('');<Left><Left><Left>
-inoremap <Leader>id describe('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
-" inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
-" inoremap <Leader>ii it('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-inoremap <Leader>ib before(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
-" inoremap <Leader>ib before(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
-inoremap <Leader>ia after(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
-" inoremap <Leader>ia after(function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
+" inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
+" inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+inoremap <Leader>ii it('', async function () {});<Left><Left><Left><CR><Up><Esc>^f'a
+" inoremap <Leader>ib before(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ib before(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
+" inoremap <Leader>ia after(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>ia after(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
 nmap <Leader>id o,id
 nmap <Leader>ii o,ii
 nmap <Leader>ib o,ib

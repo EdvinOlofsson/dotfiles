@@ -9,7 +9,9 @@
         tool = meld 
         stat = true
 [push]
-	default = simple
+	default = current
+[pull]
+        ff = only
 [color]
         ui = auto
         status = always
@@ -49,8 +51,8 @@
 	bst = "!f() { echo 'fetching'; git fetch; git branch -vv | grep '*'; }; f"
 	checkstash = "!f() { git stash show -p stash@{$1}; }; f"
         coq = "!f() { git checkout $1 -q; }; f"
-        last = "!f() { git log $1 --pretty=format:'%C(yellow)%h%C(reset) - %s %C(red)(%cn)%C(reset) %C(green)(%cr)%C(reset)'; }; f"
+        last = "!f() { git log --decorate $1 --pretty=format:'%C(yellow)%h%C(reset)%C(bold blue)%d %C(reset)- %s %C(red)(%cn)%C(reset) %C(green)(%cr)%C(reset)'; }; f"
         res = "!f() { git reset HEAD~$1 $2; }; f"
-
+ 
 [diff-so-fancy]
         stripLeadingSymbols = false

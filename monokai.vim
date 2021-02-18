@@ -187,7 +187,7 @@ call s:h("Comment",       { "fg": s:warmgrey, "format": "italic" })
                          
 call s:h("Underlined",    { "fg": s:green })
 call s:h("Ignore",        {})
-call s:h("Error",         { "fg": s:red, "bg": s:darkred })
+call s:h("Error",         { "fg": s:black, "bg": s:black })
 
 "Error window
 call s:h("qfFileName",  { "fg": s:aqua, "bg": s:black })
