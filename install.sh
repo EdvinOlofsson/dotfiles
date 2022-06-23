@@ -6,6 +6,10 @@ sudo apt install ruby
 sudo apt install git
 sudo apt install neovim
 
+# Install dependencies for cisco vpn
+pip install openconnect-sso
+pip install PyQtWebEngine
+
 # Bash Git Prompt
 git clone https://github.com/magicmonty/bash-git-prompt.git ./.bash-git-prompt --depth=1
 # SCM_Breeze

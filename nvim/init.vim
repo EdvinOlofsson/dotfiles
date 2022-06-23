@@ -41,19 +41,19 @@ Plug 'dense-analysis/ale'
 " Navigate tmux panes with hjkl
 Plug 'christoomey/vim-tmux-navigator'
 
-" tmux line
+" tmux line 
+" Makes tmux look good
 Plug 'edkolev/tmuxline.vim'
 
 " Tab completion
-Plug 'Valloric/YouCompleteMe', { 'do': 'python3 ./install.py --js-completer' }
-" Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': 'python3 ./install.py --ts-completer' }
 
 Plug 'AndrewRadev/splitjoin.vim'
 
 " Gitwrapper for airline
 Plug 'tpope/vim-fugitive'
 
-Plug 'junegunn/fzf', { 'dir': '~/dev/git/dotfiles/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 Plug 'vim-scripts/Tabmerge'
@@ -64,7 +64,8 @@ Plug 'yssl/QFEnter'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 
-Plug 'vimpostor/vim-tpipeline'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 
 " Plug 'ervandew/supertab'
 call plug#end()
@@ -80,7 +81,6 @@ if !exists('g:airline_symbols')
 	let g:airline_symbols={}
 endif
 let g:airline#extension#branch#enabled=1
-let g:airline#extension#tabline#enabled=1
 let g:airline_theme='simple'
 let g:airline_powerline_fonts=1
 let g:airline_symbols.space="\ua0"
@@ -90,29 +90,39 @@ let g:airline_left_alt_sep=''
 " let g:airline_right_sep=''
 let g:airline_right_sep=''
 let g:airline_right_alt_sep=''
-let g:airline_symbols.linenr='☯'
+let g:airline_symbols.linenr=''
 " let g:airline_symbols.branch='⎇'
 let g:airline_symbols.branch = ''
+" let g:airline_symbols.maxlinenr = ''
+" let g:airline_symbols.colnr = ''
 let g:airline_symbols.paste='ρ'
 let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.whitespace=''
+let g:airline_symbols.dirty='💩'
 let g:airline_skip_empty_sections=1
+let g:airline_section_c='%t'
 let g:airline_section_x=0
 let g:airline_section_y=0
+let g:airline_section_z = airline#section#create(['linenr', 'maxlinenr', 'colnr'])
 let g:airline#extensions#branch#displayed_head_limit=30
 let g:airline#extensions#branch#empty_message = '!branch'
-let g:airline#extensions#tabline#show_tab_type=1
-let g:airline#extentions#tabline#fnamecollapse=0
+" Seems to not work...
+let g:airline#extension#tabline#enabled=1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#show_splits = 1
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
 " let g:airline#extensions#syntastic#enabled=1
 let g:airline#extensions#ale#enabled=1
-let g:airline#extensions#ale#error_symbol='💩'
-let g:airline#extensions#ale#warning_symbol='⚠️'
+let g:airline#extensions#ale#error_symbol='💩 '
+let g:airline#extensions#ale#warning_symbol='⚠️ '
 let g:airline#extensions#whitespace#mixed_indent_algo=1
 let g:airline#extensions#whitespace#checks=['indent', 'trailing']
 let g:airline#extensions#tmuxline#enabled=1
 let g:airline#extensions#ycm#enabled=1
-let g:airline#extensions#ycm#error_symbol='e:'
-let g:airline#extensions#ycm#warning_symbol='w:'
+let g:airline#extensions#ycm#error_symbol='💩'
+let g:airline#extensions#ycm#warning_symbol='⚠️'
 
 " make YCM compatible with UltiSnips
 let g:UltiSnipsExpandTrigger           = '<tab>'
@@ -120,7 +130,27 @@ let g:UltiSnipsJumpForwardTrigger      = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
 let g:ycm_key_list_select_completion   = ['Down']
 let g:ycm_key_list_previous_completion = ['<Up>']
-let g:ycm_use_ultisnips_completer = 1
+let g:ycm_use_ultisnips_completer = 0
+let g:ycm_filter_diagnostics = { 'javascript': { 'regex': [ '.*' ] } }
+let g:ycm_show_diagnostics_ui = 0
+
+"Toggle YouCompleteMe on and off with F3
+function Toggle_ycm()
+    if g:ycm_show_diagnostics_ui == 0
+        let g:ycm_auto_trigger = 1
+        let g:ycm_show_diagnostics_ui = 1
+        :YcmRestartServer
+        :e
+        :echo "YCM on"
+    elseif g:ycm_show_diagnostics_ui == 1
+        let g:ycm_auto_trigger = 0
+        let g:ycm_show_diagnostics_ui = 0
+        :YcmRestartServer
+        :e
+        :echo "YCM off"
+    endif
+endfunction
+noremap <leader>tycm :call Toggle_ycm() <CR>
 
 
 " better key bindings for UltiSnipsExpandTrigger
@@ -143,9 +173,9 @@ nmap <Leader>hn <Plug>(GitGutterNextHunk)
 nmap <Leader>hp <Plug>(GitGutterPrevHunk)
 nmap Q <NoP>
 
-nmap <Leader>gs :Gstatus<CR>
-nmap <Leader>gcm :Gcommit --amend<CR>
-nmap <Leader>gps :Gpush --force-with-leas<CR>
+nmap <Leader>gs :Git status<CR>
+nmap <Leader>gcm :Git commit --amend<CR>
+nmap <Leader>gps :Git push --force-with-leas<CR>
 
 " vim-javascript
 let g:javascript_plugin_jsdoc=1
@@ -159,11 +189,10 @@ let g:vim_jsx_pretty_colorful_config=0
 " nerdcommenter
 let g:NERDSpaceDelims=1
 let g:NERDCompatSexyComs=1
-map ,cb <plug>NERDComSexyComment
 
 " scrooloose/nerdtree
 let NERDTreeChDirMode=0
-let g:NERDTreeIndicatorMapCustom={
+let g:NERDTreeGitStatusIndicatorMapCustom={
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -226,12 +255,13 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \}
+let g:ale_sign_highlight_linenrs = 0
 let g:ale_set_highlights = 0
 let g:ale_set_signs = 1
 let g:ale_fix_on_save = 0
 let g:ale_lint_on_save = 1
 let g:ale_cursor_detail = 0
-let g:ale_virualtext_cursor = 0
+let g:ale_virtualtext_cursor = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 0
 let g:ale_echo_cursor = 1
@@ -242,13 +272,15 @@ let g:ale_sign_warning='💩'
 let g:ale_sign_style_warning='💩'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_lint_on_enter = 1
+highlight clear ALEErrorSign
+highlight clear ALEWarningSign
 nnoremap <Leader>af :ALEFix<CR>
 nnoremap <Leader>al :ALELint<CR>
 nnoremap <Leader>an :ALENext<CR>
 nnoremap <Leader>ap :ALEPrevious<CR>
 
 nnoremap <silent> <Leader>st :call ToggleErrors()<CR>
-nnoremap <Leader>sc :SyntasticCheck<CR>
+" nnoremap <Leader>sc :SyntasticCheck<CR>
 nnoremap <Leader>ne :lnext<CR>
 nnoremap <Leader>pe :pnext<CR>
 
@@ -265,9 +297,14 @@ let g:tmuxline_preset = {
     \ 'z': '#H'}
 
 " fzf
+let g:fzf_action = {
+      \ 'enter': 'drop',
+      \ 'ctrl-t': 'tab drop',
+      \ 'ctrl-x': 'split',
+      \ 'ctrl-v': 'vsplit' }
 function! RG()
     call inputsave()
-    let match = input({ 'prompt': 'match: ', 'default': './', 'cancelreturn': './' })
+    let match = input({ 'prompt': 'Rg: ', 'default': '', 'cancelreturn': '' })
     call inputrestore()
     execute "Rg '".l:match."'"
 endfunction
@@ -286,9 +323,15 @@ function! RGunit()
     execute "Rg '".l:match."'" './test/unittests/'
 endfunction
 
-map <Leader>Z :FZF .<CR>
-map <Leader>z :GFiles .<CR>
+map <Leader>z :FZF .<CR>
+map <Leader>g :GFiles .<CR>
 map <Leader>b :Buffers<CR>
+map <Leader>rg :RG<CR>
+" Other good fzf commands
+" :Commits
+" :BCommits
+" :Commands
+
 " Yank Rip Grep. <C-r>+, reads from clipboard
 map <Leader>yrg yiw:Rg <C-r>+<CR>
 map <Leader>rg :call RG()<CR>
@@ -306,11 +349,19 @@ set nobackup
 set noswapfile
 set encoding=utf-8
 set suffixesadd+=.js,.jsx
-set path=.,/usr/include,,$PWD/src,$PWD/test/unittests/,$PWD/test/functional/
+set path+=/usr/include
+autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/
+autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/src
+autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/unittests
+autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/functional
+autocmd BufNewFile,BufRead ~/dev/git/webui-one-multi-output-configuration-editor/* set path+=~/dev/git/webui-one-multi-output-configuration-editor/src/
+" set path+=$NCS_DIR/../lib/webui/webui-one/src
+" set path+=$NCS_DIR/../lib/webui/webui-one/unittests
+" set path+=$NCS_DIR/../lib/webui/webui-one/functional
 set wildmenu
 set wildmode=list:longest,full
 set showcmd
-set number
+set number relativenumber
 set ruler
 set nowrap
 set sidescroll=1
@@ -323,7 +374,6 @@ set hlsearch
 hi Search ctermfg=Red ctermbg=NONE
 set backspace=indent,eol,start
 set cursorline
-hi CursorLineNr ctermfg=Green
 hi clear CursorLine
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
@@ -372,7 +422,14 @@ nnoremap <Leader>cfa ^f(<Right>ct,
 nnoremap <Leader>cla ^f)F,<Right>ct)
 
 imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>/xxx<CR><C-n><C-n>c
+imap <Leader>irc console.log('%cxxx: ', 'color: red', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
+imap <Leader>igc console.log('%cxxx: ', 'color: green', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
+imap <Leader>ibc console.log('%cxxx: ', 'color: blue', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
 imap <Leader>iC console.log('');<Left><Left><Left>
+imap <Leader>irC console.log('%c', 'color: red');<Esc>^/%c<CR>ea
+imap <Leader>igC console.log('%c', 'color: green');<Esc>^/%c<CR>ea
+imap <Leader>ibC console.log('%c', 'color: blue');<Esc>^/%c<CR>ea
+
 " inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
 " inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
@@ -436,5 +493,10 @@ nnoremap <Leader>csc :call SynColour()<CR>
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+luafile $HOME/.config/nvim/treesitter.lua
+nnoremap <leader>tsh :TSHighlightCapturesUnderCursor<Cr>
+nnoremap <leader>tth :TSBufToggle highlight<Cr>
+nnoremap <leader>tpg :TSPlaygroundToggle<Cr>
 
 set secure

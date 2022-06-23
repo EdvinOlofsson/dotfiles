@@ -23,6 +23,7 @@ alias confd65='cd ~/dev/git/confd-6.5/'
 alias confd66='cd ~/dev/git/confd-6.6/'
 alias confd67='cd ~/dev/git/confd-6.7/'
 
+alias vim='exec_scmb_expand_args /usr/bin/nvim'
 alias dev='cd ~/dev/'
 alias dot='cd ~/dev/git/dotfiles'
 alias la='ls -la'
@@ -33,6 +34,16 @@ alias rbashrc='. ~/.bashrc'
 alias bashal='vim ~/.bash_aliases'
 
 alias gfoc='git-fzf-checkout.sh'
+if [[ $- =~ i ]]; then
+  # bind '"\er": redraw-current-line'
+  # bind '"\C-g\C-f": "$(_gf)\e\C-e\er"'
+  bind -x '"\C-g\C-b": "git-fzf-branches.sh"'
+  bind '"\C-g\C-c": "git-fzf-checkout.sh\n"'
+  # bind '"\C-g\C-t": "$(_gt)\e\C-e\er"'
+  # bind '"\C-g\C-h": "$(_gh)\e\C-e\er"'
+  # bind '"\C-g\C-r": "$(_gr)\e\C-e\er"'
+  # bind '"\C-g\C-s": "$(_gs)\e\C-e\er"'
+fi
 
 # alias gd='git diff --color | diff-so-fancy'
 alias ciscovpn='openconnect-sso -s https://ams-vpn-cluster.cisco.com/ssl'
