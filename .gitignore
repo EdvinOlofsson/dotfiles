@@ -1,5 +1,12 @@
 nvim/plugged/*
-./scm_breeze
+nvim/ftplugin/*
+nvim/autoload/*
+nvim/doc/*
+nvim/plugin/*
+
+nvim.appimage
+
+.scm_breeze/*
 ./splitjoin
 ./.fzf
 ./linediff.vim.git
