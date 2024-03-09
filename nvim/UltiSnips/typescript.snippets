@@ -1,0 +1,17 @@
+snippet desc
+test.describe('${1:description}', () => {
+    ${2:# code}
+});
+endsnippet
+
+snippet test
+test('${1:description}', async ({ ${2:fixtures} }) => {
+    ${3:# code}
+});
+endsnippet
+
+snippet step
+await test.step('should ${1:description}', async () => {
+    ${2:# code}
+});
+endsnippet

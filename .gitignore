@@ -4,6 +4,8 @@ nvim/autoload/*
 nvim/doc/*
 nvim/plugin/*
 
+.tmux/*
+
 nvim.appimage
 
 .scm_breeze/*

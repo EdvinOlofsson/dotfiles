@@ -1,0 +1,107 @@
+# Code snippets
+snippet map
+${1:iterable}.map((${2:key}) => {
+    ${3:# code}
+});
+endsnippet
+
+snippet reduce
+${1:iterable}.reduce((acc, ${2:key}) => {
+    ${3:# code}
+}, []);
+endsnippet
+
+snippet arrow
+const ${1:name} = (${2:argmuents}) => {
+    ${3:# code}
+};
+endsnippet
+
+snippet func
+function ${1:name}(){
+    ${2:# code}
+};
+endsnippet
+
+snippet con
+console.log('${1:name}: ', ${2:value});
+endsnippet
+
+snippet gcon
+console.log('%c${1:name}: ', 'color: green', ${2:value});
+endsnippet
+
+snippet ue
+useEffect(() => {
+    ${2:#code}
+}, [${1}]);
+endsnippet
+
+snippet us
+const [${1}, ${2}] = useState(${3});
+endsnippet
+
+#HTML snippets
+snippet tag
+<${1} ${2}>
+    ${3}
+</$1>
+endsnippet
+snippet div
+<div ${1}>
+    ${2}
+</div>
+endsnippet
+
+snippet span
+<span ${1}>
+    ${3}
+</span>
+endsnippet
+
+snippet <>
+<>
+    ${1}
+</>
+endsnippet
+
+snippet at
+${1}="${2}"
+endsnippet
+
+#Testing snippets
+snippet after
+after(async function() {
+    ${1}
+});
+endsnippet
+
+snippet afterEach
+afterEach(async function() {
+    ${1}
+});
+endsnippet
+
+snippet before
+before(async function () {
+    ${1}
+});
+endsnippet
+
+snippet beforeEach
+beforeEach(async function () {
+    ${1}
+});
+endsnippet
+
+snippet "(desc|describe)"
+describe('${1:description}', function () {
+    ${2:# code}
+});
+endsnippet
+
+snippet it
+it('should ${1:do something}', async function () {
+    ${2:# code}
+});
+endsnippet

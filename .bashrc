@@ -122,8 +122,11 @@ fi
 ####################
 
 export PATH="$HOME/dev/git/dotfiles/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/dev/releases/tctl:$PATH"
 #Load ssh keys
-/usr/bin/keychain $HOME/.ssh/id_rsa
+/usr/bin/keychain $HOME/.ssh/stash180
+/usr/bin/keychain $HOME/.ssh/harbor
 source $HOME/.keychain/$HOSTNAME-sh
 
 #Load aliases
@@ -162,6 +165,28 @@ export TAILF_OTP_CACHE=~/dev/oto-cache
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-# eval "$(pyenv init -)"
 
 [ -s "/home/edvin/.scm_breeze/scm_breeze.sh" ] && source "/home/edvin/.scm_breeze/scm_breeze.sh"
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+export PATH=$PATH:/home/edvin/.temporalio/bin
+#! /bin/bash
+_cli_bash_autocomplete() {
+  if [[ "${COMP_WORDS[0]}" != "source" ]]; then
+    local cur opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    if [[ "$cur" == "-"* ]]; then
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} ${cur} --generate-bash-completion )
+    else
+      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --generate-bash-completion )
+    fi
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+  fi
+}
+complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete temporal
+
+export PATH=$PATH:/usr/local/go/bin

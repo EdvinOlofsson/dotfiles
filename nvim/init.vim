@@ -1,4 +1,3 @@
-" let g:loaded_youcompleteme = 1
 " ===== vim-plug ====
 call plug#begin()
 
@@ -17,15 +16,17 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'crusoexia/vim-monokai'
 
 " vim multiple curors
-Plug 'terryma/vim-multiple-cursors'
+" Plug 'terryma/vim-multiple-cursors'
+
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
 " Better comments and keybindings
-Plug 'scrooloose/nerdcommenter'
+" Plug 'scrooloose/nerdcommenter'
 
 " File navigator
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'scrooloose/nerdtree'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Visual indicators of marks
 Plug 'kshenoy/vim-signature'
@@ -64,8 +65,11 @@ Plug 'yssl/QFEnter'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
+Plug 'wellle/targets.vim'
+
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+"Plug 'nvim-treesitter/playground'
+"Plug 'nvim-treesitter/nvim-treesitter-context'
 
 " Plug 'ervandew/supertab'
 call plug#end()
@@ -125,10 +129,24 @@ let g:airline#extensions#ycm#error_symbol='💩'
 let g:airline#extensions#ycm#warning_symbol='⚠️'
 
 " make YCM compatible with UltiSnips
-let g:UltiSnipsExpandTrigger           = '<tab>'
-let g:UltiSnipsJumpForwardTrigger      = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
-let g:ycm_key_list_select_completion   = ['Down']
+let g:UltiSnipsExpandTrigger           = '<Tab>'
+let g:UltiSnipsJumpForwardTrigger      = '<Tab>'
+let g:UltiSnipsJumpBackwardTrigger     = '<S-Tab>'
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.config/nvim/UltiSnips']
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:ultisnips_javascript = {
+    \ 'keyword-spacing': 'always',
+    \ 'semi': 'always',
+    \ 'space-before-function-paren': 'always',
+    \ }
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+au BufEnter *.snippets :highlight clear snipLeadingSpaces
+
+let g:ycm_key_list_select_completion   = ['']
+let g:ycm_key_list_insert_completion = ['<Tab>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<Up>']
 let g:ycm_use_ultisnips_completer = 0
 let g:ycm_filter_diagnostics = { 'javascript': { 'regex': [ '.*' ] } }
@@ -153,17 +171,6 @@ endfunction
 noremap <leader>tycm :call Toggle_ycm() <CR>
 
 
-" better key bindings for UltiSnipsExpandTrigger
-let g:ultisnips_javascript = {
-    \ 'keyword-spacing': 'always',
-    \ 'semi': 'always',
-    \ 'space-before-function-paren': 'always',
-    \ }
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-au BufEnter *.snippets :highlight clear snipLeadingSpaces
-
 " Git gutter
 let g:gitgutter_max_signs=1000
 autocmd BufWritePost * GitGutter
@@ -187,29 +194,29 @@ let g:vim_jsx_pretty_colorful_config=0
 " vim-monokai
 " vim-multiple-cursors
 " nerdcommenter
-let g:NERDSpaceDelims=1
-let g:NERDCompatSexyComs=1
+" let g:NERDSpaceDelims=1
+" let g:NERDCompatSexyComs=1
 
 " scrooloose/nerdtree
-let NERDTreeChDirMode=0
-let g:NERDTreeGitStatusIndicatorMapCustom={
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✹",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
-map <C-t> :NERDTreeToggle %:p:h<CR>
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
+" let NERDTreeChDirMode=0
+" let g:NERDTreeGitStatusIndicatorMapCustom={
+    " \ "Modified"  : "✹",
+    " \ "Staged"    : "✚",
+    " \ "Untracked" : "✭",
+    " \ "Renamed"   : "➜",
+    " \ "Unmerged"  : "═",
+    " \ "Deleted"   : "✖",
+    " \ "Dirty"     : "✹",
+    " \ "Clean"     : "✔︎",
+    " \ 'Ignored'   : '☒',
+    " \ "Unknown"   : "?"
+    " \ }
+" map <C-t> :NERDTreeToggle %:p:h<CR>
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" let g:NERDTreeFileExtensionHighlightFullName = 1
+" let g:NERDTreeExactMatchHighlightFullName = 1
+" let g:NERDTreePatternMatchHighlightFullName = 1
 
 " vim-signatiure
 " vim-surround
@@ -252,9 +259,7 @@ endfunction
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \}
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\}
+
 let g:ale_sign_highlight_linenrs = 0
 let g:ale_set_highlights = 0
 let g:ale_set_signs = 1
@@ -262,8 +267,8 @@ let g:ale_fix_on_save = 0
 let g:ale_lint_on_save = 1
 let g:ale_cursor_detail = 0
 let g:ale_virtualtext_cursor = 0
-let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 0
+let g:ale_set_loclist = 1
+let g:ale_set_quickfix = 1
 let g:ale_echo_cursor = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_sign_error='💩'
@@ -306,42 +311,46 @@ function! RG()
     call inputsave()
     let match = input({ 'prompt': 'Rg: ', 'default': '', 'cancelreturn': '' })
     call inputrestore()
-    execute "Rg '".l:match."'"
+    execute "Rg '".l:match."'" '%p%h'
 endfunction
 
-function! RGfunctional()
-    call inputsave()
-    let match = input('match: ')
-    call inputrestore()
-    execute "Rg '".l:match."'" './test/functional/'
+let g:fzf_preview_window = ['up,50%', 'ctrl-/']
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, {'options': ['--info=inline', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
+
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
-function! RGunit()
-    call inputsave()
-    let match = input('match: ')
-    call inputrestore()
-    execute "Rg '".l:match."'" './test/unittests/'
-endfunction
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
-map <Leader>z :FZF .<CR>
-map <Leader>g :GFiles .<CR>
+map <Leader>Z :Files!<CR>
+map <Leader>z :GFiles lib/webui/webui-one/<CR>
+map <Leader>g :GFiles!?<CR>
 map <Leader>b :Buffers<CR>
-map <Leader>rg :RG<CR>
+map <Leader>rg :RG!<CR>
 " Other good fzf commands
 " :Commits
 " :BCommits
 " :Commands
 
 " Yank Rip Grep. <C-r>+, reads from clipboard
-map <Leader>yrg yiw:Rg <C-r>+<CR>
-map <Leader>rg :call RG()<CR>
-map <Leader>RGF :call RGfunctional()<CR>
-map <Leader>RGU :call RGunit()<CR>
+map <Leader>yrg yiw:RG! <C-r>+<CR>
 
 " ===== my vim settings =====
 filetype plugin indent on
 syntax on
 colorscheme monokai
+set guifont="Hack Nerd Font Mono":size=12
 set t_Co=256
 
 set mouse=
@@ -373,8 +382,8 @@ set incsearch
 set hlsearch
 hi Search ctermfg=Red ctermbg=NONE
 set backspace=indent,eol,start
-set cursorline
-hi clear CursorLine
+" set cursorline
+" hi clear CursorLine
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
 " set listchars=tab:▸\ ,trail:·,eol:¬,space:·
@@ -384,14 +393,15 @@ set splitright
 set expandtab
 set shiftwidth=4
 set softtabstop=4
-set scrolloff=6
+set scrolloff=12
 set autoindent
 set foldnestmax=5
 let @s = '^wi.skip'
 let @o = '^wi.only'
 let @d = '^wdt('
 
-nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:NERDTreeClose<CR>:ccl<CR>
+" :NERDTreeClose<CR>
+nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:ccl<CR>:NvimTreeClose<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
 
@@ -430,18 +440,35 @@ imap <Leader>irC console.log('%c', 'color: red');<Esc>^/%c<CR>ea
 imap <Leader>igC console.log('%c', 'color: green');<Esc>^/%c<CR>ea
 imap <Leader>ibC console.log('%c', 'color: blue');<Esc>^/%c<CR>ea
 
-" inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+"inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-" inoremap <Leader>ii it('', async () => {});<Left><Left><Left><CR><Up><Esc>^f'a
+" inoremap <Leader>ii it('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 inoremap <Leader>ii it('', async function () {});<Left><Left><Left><CR><Up><Esc>^f'a
-" inoremap <Leader>ib before(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+"inoremap <Leader>ib before(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
 inoremap <Leader>ib before(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
-" inoremap <Leader>ia after(async () => {});<Left><Left><Left><CR><Up><Esc><Esc>o
+"inoremap <Leader>ia after(() => {});<Left><Left><Left><CR><Up><Esc><Esc>o
 inoremap <Leader>ia after(async function () {});<Left><Left><Left><CR><Up><Esc><Esc>o
+inoremap <Leader>iue useEffect(() => {}, []);<Left><Left><Left><Left><Left><Left><Left><CR><Esc><Esc>O
+inoremap <Leader>ius const [] = useState();<Esc>^<space>f[a
+inoremap <Leader>ibw await browser.waitForVisible('');<Left><Left><Left>
+
 nmap <Leader>id o,id
 nmap <Leader>ii o,ii
 nmap <Leader>ib o,ib
 nmap <Leader>ia o,ia
+nmap <Leader>iue o,iue
+nmap <Leader>ius o,ius
+nmap <Leader>ibw o,ibw
+
+" delete without yanking
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+
+" replace currently selected text with default register
+" without yanking it
+vnoremap <leader>p "_dP
+
+
 inoremap <Leader>o <C-o>
 nnoremap <sapce> za
 nnoremap <space>f $zf%
@@ -494,9 +521,10 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
-luafile $HOME/.config/nvim/treesitter.lua
+"luafile $HOME/.config/nvim/treesitter.lua
 nnoremap <leader>tsh :TSHighlightCapturesUnderCursor<Cr>
 nnoremap <leader>tth :TSBufToggle highlight<Cr>
 nnoremap <leader>tpg :TSPlaygroundToggle<Cr>
 
+luafile ~/.config/nvim/lua/init.lua
 set secure

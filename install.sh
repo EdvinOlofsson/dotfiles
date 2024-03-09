@@ -40,8 +40,10 @@ ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
 ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
 ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
 ln -sf ~/dev/git/dotfiles/nvim/UltiSnips ~/.config/nvim/UltiSnips
+ln -sf ~/dev/git/dotfiles/nvim/lua ~/.config/nvim/lua
 
 ln -sf ~/dev/git/dotfiles/.tmux.conf ~/.tmux.conf
+ln -sf ~/dev/git/dotfiles/.tmux ~/.tmux
 
 # SplitJoin
 git clone https://github.com/AndrewRadev/splitjoin.vim.git ./splitjoin
