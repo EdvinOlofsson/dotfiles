@@ -12,5 +12,8 @@ nvim.appimage
 ./splitjoin
 ./.fzf
 ./linediff.vim.git
-./.bash-git-prompt
+./.bash-git-prompt/*
+.bash-git-prompt
 ./fonts
+bin/chromes/*
+fonts
