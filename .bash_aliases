@@ -1,7 +1,8 @@
 alias cli='ncs_cli -u admin'
 alias ncs_reset='make -C $CONFDX_DIR/lib/webui/webui-one/ncs reset'
 alias tailf='cd ~/dev/git/tailf/'
-alias one="cd ${NCS_DIR}/../lib/webui/webui-one"
+alias one='cd ${NCS_DIR}/../lib/webui/webui-one'
+alias xclip="xclip -selection c"
 
 # alias vim='exec_scmb_expand_args /usr/bin/vim'
 alias vim='~/dev/git/dotfiles/nvim.appimage'

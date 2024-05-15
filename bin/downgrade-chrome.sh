@@ -1,5 +1,6 @@
 # https://www.ubuntuupdates.org/package/google_chrome/stable/main/base/google-chrome-stable
-V="${V:-116.0.5845.187-1}" # Replace this value with the one you copied earlier from ^
+latest_version=$(apt-cache madison google-chrome-stable | head -n 1 | awk '{print $3}')
+V="${1:-$latest_version}"
 FILE_NAME="google-chrome-stable_${V}_amd64.deb"
 CURRENT_VERSION=$(google-chrome --version | awk '{print $3}')
 
@@ -8,7 +9,7 @@ echo "CURRENT_VERSION: ${CURRENT_VERSION}"
 
 if [[ $V = *$CURRENT_VERSION* ]]; then
     echo -e "${V} - Already installed!\n"
-    exit 1
+    exit 0
 fi
 
 if [ -f ./chromes/${FILE_NAME} ]; then
@@ -19,4 +20,3 @@ else
 fi
 echo -e "${V} - Installing...\n"
 sudo dpkg -i "./chromes/${FILE_NAME}"
-#rm "google-chrome-stable_${V}_amd64.deb"

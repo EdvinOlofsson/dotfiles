@@ -16,4 +16,5 @@ nvim.appimage
 .bash-git-prompt
 ./fonts
 bin/chromes/*
+bin/foxes/*
 fonts

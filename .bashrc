@@ -169,7 +169,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/home/edvin/.scm_breeze/scm_breeze.sh" ] && source "/home/edvin/.scm_breeze/scm_breeze.sh"
 
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+#source <(ng completion script)
 
 export PATH=$PATH:/home/edvin/.temporalio/bin
 #! /bin/bash
