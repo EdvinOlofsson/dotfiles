@@ -23,12 +23,39 @@ function ${1:name}(){
 };
 endsnippet
 
-snippet con
-console.log('${1:name}: ', ${2:value});
+snippet if
+if (${1:expression}) {
+    ${2:# code}
+}
 endsnippet
 
-snippet gcon
-console.log('%c${1:name}: ', 'color: green', ${2:value});
+snippet else
+else {
+    ${1:# code}
+}
+endsnippet
+
+snippet try
+try {
+    ${1:# code}
+} catch (error) {
+    console.log('error: ', error);
+}
+endsnippet
+snippet log
+console.log('${1:name}');
+endsnippet
+
+snippet vlog
+console.log('${1:name}: ', ${2:variable});
+endsnippet
+
+snippet vlogg
+console.log('%c${1:name}: ', 'color: green', ${1:variable});
+endsnippet
+
+snippet vlogr
+console.log('%c${1:name}: ', 'color: red', ${2:variable});
 endsnippet
 
 snippet ue

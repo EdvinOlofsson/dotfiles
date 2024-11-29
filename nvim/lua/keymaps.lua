@@ -1,4 +1,5 @@
--- vim.api.nvim_set_keymap('n', '<C-t>', ':NvimTreeToggle<CR>:NvimTreeFindFile<CR>', { noremap = true, silent = tru-- Define a function to toggle the nvimtree and find the file
+-- vim.keymap.set('n', '<C-t>', ':NvimTreeFindFile<CR>', { noremap = true, silent = true })
+
 function toggle_nvimtree_and_find_file()
   if not vim.api.nvim_buf_is_loaded(0) then
     return
@@ -15,6 +16,10 @@ function toggle_nvimtree_and_find_file()
     vim.cmd('NvimTreeFindFile')
   end
 end
-
--- Define the keymap to toggle the nvimtree or find the file
-vim.api.nvim_set_keymap('n', '<C-t>', '<cmd>lua toggle_nvimtree_and_find_file()<CR>', { noremap = true, silent = true })
+local api = require "nvim-tree.api"
+local function opts(desc)
+  return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+end
+-- add your mappings
+vim.keymap.set('n', '<leader>t',   '<cmd>lua toggle_nvimtree_and_find_file()<CR>', opts('Toggle'))
+vim.keymap.set('n', '?',       api.tree.toggle_help,                opts('Help'))

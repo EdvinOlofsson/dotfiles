@@ -9,30 +9,56 @@ alias vim='~/dev/git/dotfiles/nvim.appimage'
 alias nvim='~/dev/git/dotfiles/nvim.appimage'
 alias vi='vim'
 alias dot='cd ~/dev/git/dotfiles'
-alias la='ls -la'
+alias la='ls -la --format single-column'
 alias pycli='ipython ~/dev/git/ncs_pycli/ncs_pycli'
 alias vimrc='vim ~/.vimrc'
 alias bashrc='vim ~/.bashrc'
 alias rbashrc='. ~/.bashrc'
 alias bashal='vim ~/.bash_aliases'
-alias ,yb='git rev-parse --abbrev-ref HEAD | xargs echo -n | xclip -selection c'
-
+#alias ,yb='git rev-parse --abbrev-ref HEAD | xargs echo -n | xclip -selection c'
+#alias ,ye='git rev-parse --abbrev-ref HEAD | grep -o "ENG-[0-9]\+" | xargs echo -n | xclip -selection c'
 alias gfoc='git-fzf-checkout.sh'
-if [[ $- =~ i ]]; then
-  # bind '"\er": redraw-current-line'
-  # bind '"\C-g\C-f": "$(_gf)\e\C-e\er"'
-  bind -x '"\C-g\C-b": "git-fzf-branches.sh"'
-  bind '"\C-g\C-c": "git-fzf-checkout.sh\n"'
-  # bind '"\C-g\C-t": "$(_gt)\e\C-e\er"'
-  # bind '"\C-g\C-h": "$(_gh)\e\C-e\er"'
-  # bind '"\C-g\C-r": "$(_gr)\e\C-e\er"'
-  # bind '"\C-g\C-s": "$(_gs)\e\C-e\er"'
-fi
+alias gfco='git-fzf-checkout.sh'
+alias gsr='git-soft-reset-file.sh'
+alias jqf='jqf.sh'
+alias grh='git reset HEAD~1'
+alias beep='paplay /usr/share/sounds/gnome/default/alerts/glass.ogg'
 
-# alias gd='git diff --color | diff-so-fancy'
-alias ciscovpn='openconnect-sso -s https://ams-vpn-cluster.cisco.com/ssl'
-alias ciscovpn1='openconnect-sso -s https://aer01-hda1-vpn-cluster-1.cisco.com/ssl'
-alias ciscovpn2='openconnect-sso -s https://aer02-hda1-vpn-cluster-2.cisco.com/ssl'
-alias ciscovpn3='openconnect-sso -s https://aer01-hda1-vpn-cluster-3.cisco.com/ssl'
-alias ciscovpn4='openconnect-sso -s https://aer02-hda1-vpn-cluster-4.cisco.com/ssl'
-alias ciscovpn5='openconnect-sso -s https://aer01-hda1-vpn-cluster-5.cisco.com/ssl'
+prepare_commit_message() {
+    #ENG_STRING=$(git rev-parse --abbrev-ref HEAD | grep -o "ENG-[0-9]\+")
+    ENG_STRING=$(git rev-parse --abbrev-ref HEAD | grep -Eo "ENG-[0-9]+|noticket")
+
+    if [[ -z "$ENG_STRING" ]]; then
+        echo "Neither ENG-[0-9]+ pattern nor 'noticket' string was found."
+        return 1  # or 'exit 1' if it's a script and not a function
+    elif [[ "$ENG_STRING" == "noticket" ]]; then
+      ENG_STRING="no ticket"
+
+      COMMIT_CMD="gc -m \"$ENG_STRING, webui-one: \""
+    else
+      COMMIT_CMD="gc -m \"[$ENG_STRING, webui-one] \""
+    fi
+
+    # COMMIT_CMD="gc -m \"[$ENG_STRING, webui-one] \""
+
+    READLINE_LINE="$COMMIT_CMD"
+    READLINE_POINT=$((${#READLINE_LINE} - 1))
+}
+bind -x '"\C-x\cm": prepare_commit_message'
+
+yank_branch() {
+    git rev-parse --abbrev-ref HEAD | xargs echo -n | xclip -sel c
+    echo $(xclip -o)
+}
+bind -x '"\C-x\yb": yank_branch'
+
+yank_eng_number() {
+    git rev-parse --abbrev-ref HEAD | grep -o "ENG-[0-9]\+" | xargs echo -n | xclip -sel c
+    echo $(xclip -o)
+}
+bind -x '"\C-x\ye": yank_eng_number'
+
+append_beep() {
+    READLINE_LINE="$READLINE_LINE; beep"
+}
+bind -x '"\C-b": append_beep'

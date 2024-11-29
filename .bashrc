@@ -88,9 +88,9 @@ fi
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+#alias ll='ls -alF'
+#alias la='ls -A'
+#alias l='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -125,8 +125,7 @@ export PATH="$HOME/dev/git/dotfiles/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/dev/releases/tctl:$PATH"
 #Load ssh keys
-/usr/bin/keychain $HOME/.ssh/stash180
-/usr/bin/keychain $HOME/.ssh/harbor
+/usr/bin/keychain $HOME/.ssh/stash
 source $HOME/.keychain/$HOSTNAME-sh
 
 #Load aliases
@@ -142,7 +141,7 @@ fi
 # caps -> ctrl
 setxkbmap -option caps:ctrl_modifier
 # Keyboard delay and repeat
-xset r rate 200 27
+xset r rate 180 30
 #Adding more colors to the 'ls' command
 export LS_COLORS "${LS_COLORS}:*.js=00;32"
 
@@ -159,34 +158,45 @@ source ~/.bash-git-prompt/gitprompt.sh
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# export USE_SSL_DIR=/home/eolofsso/openssl-1.0
-export TAILF_OTP_CACHE=~/dev/oto-cache
+export TAILF_CACHE=~/dev/cache
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
 
 [ -s "/home/edvin/.scm_breeze/scm_breeze.sh" ] && source "/home/edvin/.scm_breeze/scm_breeze.sh"
+
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 # Load Angular CLI autocompletion.
 #source <(ng completion script)
 
-export PATH=$PATH:/home/edvin/.temporalio/bin
+#export PATH=$PATH:/home/edvin/.temporalio/bin
 #! /bin/bash
-_cli_bash_autocomplete() {
-  if [[ "${COMP_WORDS[0]}" != "source" ]]; then
-    local cur opts base
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    if [[ "$cur" == "-"* ]]; then
-      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} ${cur} --generate-bash-completion )
-    else
-      opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --generate-bash-completion )
-    fi
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-    return 0
-  fi
-}
-complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete temporal
+#_cli_bash_autocomplete() {
+  #if [[ "${COMP_WORDS[0]}" != "source" ]]; then
+    #local cur opts base
+    #COMPREPLY=()
+    #cur="${COMP_WORDS[COMP_CWORD]}"
+    #if [[ "$cur" == "-"* ]]; then
+      #opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} ${cur} --generate-bash-completion )
+    #else
+      #opts=$( ${COMP_WORDS[@]:0:$COMP_CWORD} --generate-bash-completion )
+    #fi
+    #COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    #return 0
+  #fi
+#}
+#complete -o bashdefault -o default -o nospace -F _cli_bash_autocomplete temporal
 
-export PATH=$PATH:/usr/local/go/bin
+# export PATH=$PATH:/usr/local/go/bin
+
+# pnpm
+export PNPM_HOME="/home/eolofsso/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

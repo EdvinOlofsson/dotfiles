@@ -82,7 +82,11 @@ if [ "$shell_command_wrapping_enabled" = "true" ] || [ "$bash_command_wrapping_e
         if [ "${scmbDebug:-}" = "true" ]; then echo "SCMB: $cmd is an executable file"; fi
         # Otherwise, command is a regular script or binary,
         # and the full path can be found with 'find_binary' function
-        alias $cmd="exec_scmb_expand_args $(find_binary $cmd)";;
+        if [ "$cmd" = "make" ]; then
+            alias $cmd="exec_scmb_expand_args --relative $(find_binary $cmd)";
+        else
+            alias $cmd="exec_scmb_expand_args $(find_binary $cmd)";
+        fi
       esac
     done
     # Clean up

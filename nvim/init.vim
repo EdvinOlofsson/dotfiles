@@ -23,19 +23,11 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " Better comments and keybindings
 " Plug 'scrooloose/nerdcommenter'
 
-" File navigator
-" Plug 'scrooloose/nerdtree'
-" Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
 " Visual indicators of marks
 Plug 'kshenoy/vim-signature'
 
 " Surrouning stuff like quotes, brackets etc..
 Plug 'tpope/vim-surround'
-
-" Syntax checker framework amongst other things
-" Plug 'vim-syntastic/syntastic'
 
 Plug 'dense-analysis/ale'
 
@@ -63,9 +55,10 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'yssl/QFEnter'
 
 Plug 'sirver/ultisnips'
-Plug 'honza/vim-snippets'
 
 Plug 'wellle/targets.vim'
+
+Plug 'nathanalderson/yang.vim'
 
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "Plug 'nvim-treesitter/playground'
@@ -77,7 +70,7 @@ call plug#end()
 " ===== My plugin settings =====
 let mapleader=","
 set clipboard+=unnamedplus
-exe 'set rtp+=' . $NCS_DIR . "/../lib/webui/webui-one/"
+"exe 'set rtp+=' . $NCS_DIR . "/../lib/webui/webui-one/"
 
 " vim-airline
 set laststatus=2
@@ -117,22 +110,25 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 let g:airline#extensions#tabline#show_splits = 1
 let g:airline#extensions#tabline#show_tabs = 1
 let g:airline#extensions#tabline#show_tab_nr = 1
-" let g:airline#extensions#syntastic#enabled=1
-let g:airline#extensions#ale#enabled=1
-let g:airline#extensions#ale#error_symbol='💩 '
-let g:airline#extensions#ale#warning_symbol='⚠️ '
+"let g:airline#extensions#ale#enabled=1
+"let g:airline#extensions#ale#error_symbol='💩 '
+"let g:airline#extensions#ale#warning_symbol='⚠️ '
 let g:airline#extensions#whitespace#mixed_indent_algo=1
 let g:airline#extensions#whitespace#checks=['indent', 'trailing']
 let g:airline#extensions#tmuxline#enabled=1
 let g:airline#extensions#ycm#enabled=1
-let g:airline#extensions#ycm#error_symbol='💩'
-let g:airline#extensions#ycm#warning_symbol='⚠️'
+"let g:airline#extensions#ycm#error_symbol='💩'
+"let g:airline#extensions#ycm#warning_symbol='⚠️'
 
 " make YCM compatible with UltiSnips
 let g:UltiSnipsExpandTrigger           = '<Tab>'
 let g:UltiSnipsJumpForwardTrigger      = '<Tab>'
 let g:UltiSnipsJumpBackwardTrigger     = '<S-Tab>'
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.config/nvim/UltiSnips']
+let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+let g:UltiSnipsSnippetDirectories=['~/.config/nvim/UltiSnips/']
+
+let g:splitjoin_trailing_comma = 1
+let g:splitjoin_html_attributes_bracket_on_new_line = 1
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:ultisnips_javascript = {
@@ -178,7 +174,6 @@ nmap <Leader>hs <Plug>(GitGutterStageHunk)
 nmap <Leader>hr <Plug>(GitGutterUndoHunk)
 nmap <Leader>hn <Plug>(GitGutterNextHunk)
 nmap <Leader>hp <Plug>(GitGutterPrevHunk)
-nmap Q <NoP>
 
 nmap <Leader>gs :Git status<CR>
 nmap <Leader>gcm :Git commit --amend<CR>
@@ -197,63 +192,9 @@ let g:vim_jsx_pretty_colorful_config=0
 " let g:NERDSpaceDelims=1
 " let g:NERDCompatSexyComs=1
 
-" scrooloose/nerdtree
-" let NERDTreeChDirMode=0
-" let g:NERDTreeGitStatusIndicatorMapCustom={
-    " \ "Modified"  : "✹",
-    " \ "Staged"    : "✚",
-    " \ "Untracked" : "✭",
-    " \ "Renamed"   : "➜",
-    " \ "Unmerged"  : "═",
-    " \ "Deleted"   : "✖",
-    " \ "Dirty"     : "✹",
-    " \ "Clean"     : "✔︎",
-    " \ 'Ignored'   : '☒',
-    " \ "Unknown"   : "?"
-    " \ }
-" map <C-t> :NERDTreeToggle %:p:h<CR>
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-" let g:NERDTreeFileExtensionHighlightFullName = 1
-" let g:NERDTreeExactMatchHighlightFullName = 1
-" let g:NERDTreePatternMatchHighlightFullName = 1
-
 " vim-signatiure
 " vim-surround
 nmap <Leader>sw ysiw
-
-" syntastic
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-" let g:syntastic_mode_map={ 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
-" let g:syntastic_always_populate_loc_list=1
-" let g:syntastic_auto_loc_list=1
-" let g:syntastic_check_on_open=0
-" let g:syntastic_check_on_wq=0
-" let g:syntastic_cursor_column=0
-" let g:syntastic_javascript_checkers=['eslint']
-" let g:syntastic_javascript_eslint_exec='/home/eolofsso/dev/git/tailf/lib/webui/webui-one/node_modules/eslint/bin/eslint.js'
-" let g:syntastic_enable_highlighting=1
-" let g:syntastic_error_symbol='💩'
-" let g:syntastic_style_error_symbol='💩'
-" let g:syntastic_warning_symbol='⚠️'
-" let g:syntastic_style_warning_symbol='⚠️'
-
-" hi link SyntasticErrorSign SignColumn
-" hi link SyntasticWarningSign SignColumn
-" hi link SyntasticStyleErrorSign SignColumn
-" hi link SyntasticStyleWarningSign SignColumn
-
-function! ToggleErrors()
-    let old_last_winnr = winnr('$')
-    lclose
-    if old_last_winnr == winnr('$')
-        " Nothing was closed, open syntastic error location panel
-        Errors
-    endif
-endfunction
 
 " ALE
 let g:ale_fixers = {
@@ -261,6 +202,7 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sign_highlight_linenrs = 0
+let g:ale_use_neovim_diagnostics_api = 0
 let g:ale_set_highlights = 0
 let g:ale_set_signs = 1
 let g:ale_fix_on_save = 0
@@ -275,6 +217,9 @@ let g:ale_sign_error='💩'
 let g:ale_sign_style_error='💩'
 let g:ale_sign_warning='💩'
 let g:ale_sign_style_warning='💩'
+let g:ale_echo_msg_error_str = '💩'
+let g:ale_echo_msg_warning_str = '💩'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_lint_on_enter = 1
 highlight clear ALEErrorSign
@@ -284,22 +229,26 @@ nnoremap <Leader>al :ALELint<CR>
 nnoremap <Leader>an :ALENext<CR>
 nnoremap <Leader>ap :ALEPrevious<CR>
 
-nnoremap <silent> <Leader>st :call ToggleErrors()<CR>
-" nnoremap <Leader>sc :SyntasticCheck<CR>
 nnoremap <Leader>ne :lnext<CR>
 nnoremap <Leader>pe :pnext<CR>
 
 " vim-tmiux-navigator
 " tmuxline
-let g:tmuxline_powerline_separators = 0
+let g:tmuxline_separators = {
+    \ 'left' : '',
+    \ 'left_alt': '|',
+    \ 'right' : '',
+    \ 'right_alt' : '|',
+    \ 'space' : ' '}
+let g:tmuxline_powerline_separators = 1
 let g:tmuxline_preset = {
     \ 'a': '#S',
     \ 'b': '#W',
+    \ 'c': '',
     \ 'win': ['#I', '#W'],
     \ 'cwin': ['#I', '#W'],
-    \ 'x': '%a',
-    \ 'y': ['%b %d', '%R'],
-    \ 'z': '#H'}
+    \ 'x': '',
+    \ 'y': ['%R', '%a', '%Y', '#($TMUX_PLUGIN_MANAGER_PATH/tmux-mem-cpu-load/tmux-mem-cpu-load --colors --interval 1 --graph-lines 0 --averages-count 1 -m 2)']}
 
 " fzf
 let g:fzf_action = {
@@ -321,7 +270,7 @@ command! -bang -nargs=* Rg
   \   fzf#vim#with_preview(), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, {'options': ['--info=inline', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
+    \ call fzf#vim#files(<q-args>, {'options': ['--info=inline', '--preview', '~/.local/share/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
 
 function! RipgrepFzf(query, fullscreen)
   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
@@ -333,11 +282,11 @@ endfunction
 
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
-map <Leader>Z :Files!<CR>
-map <Leader>z :GFiles lib/webui/webui-one/<CR>
-map <Leader>g :GFiles!?<CR>
-map <Leader>b :Buffers<CR>
-map <Leader>rg :RG!<CR>
+noremap <Leader>Z :Files!<CR>
+noremap <Leader>z :GFiles lib/webui/webui-one/<CR>
+noremap <Leader>g :GFiles!?<CR>
+noremap <Leader>b :Buffers<CR>
+noremap <Leader>rg :RG!<CR>
 " Other good fzf commands
 " :Commits
 " :BCommits
@@ -378,12 +327,13 @@ set colorcolumn=100
 set matchpairs+=<:>
 set ignorecase
 set smartcase
+set nohlsearch
 set incsearch
-set hlsearch
 hi Search ctermfg=Red ctermbg=NONE
 set backspace=indent,eol,start
-" set cursorline
-" hi clear CursorLine
+set cursorline
+set guicursor=""
+"hi clear CursorLine
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
 " set listchars=tab:▸\ ,trail:·,eol:¬,space:·
@@ -393,6 +343,7 @@ set splitright
 set expandtab
 set shiftwidth=4
 set softtabstop=4
+set smartindent
 set scrolloff=12
 set autoindent
 set foldnestmax=5
@@ -404,6 +355,7 @@ let @d = '^wdt('
 nmap     <silent> <ESC> :noh<CR>:pclose<CR>:lcl<CR>:ccl<CR>:NvimTreeClose<CR>
 vmap     <Leader>ld :Linediff<CR>
 nnoremap <Leader>ev :split $MYVIMRC<cr>
+nnoremap <Leader>el :split ~/.config/nvim/lua/init.lua<CR>
 
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>W :w!<CR>
@@ -419,26 +371,19 @@ nnoremap <Leader><Left> :exe "vertical resize -1"<CR>
 nnoremap <Leader><Right> :exe "vertical resize +1"<CR>
 nnoremap <TAB> >>
 nnoremap <S-TAB> <<
+xnoremap p P
 
-" Visualize Function
-nnoremap <Leader>vf ^<S-v>f{%
-" Add Argument
-nnoremap <Leader>aa ^f)i, 
-" Change All Arguments
-nnoremap <Leader>caa ^f(<Right>ci)
-" Change First Argument
-nnoremap <Leader>cfa ^f(<Right>ct,
-" Change Last Argument
-nnoremap <Leader>cla ^f)F,<Right>ct)
+map <Leader>sb vib :sort<CR>kL
+map <Leader>sB gSvib :sort<CR>kLgJ
 
-imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>/xxx<CR><C-n><C-n>c
-imap <Leader>irc console.log('%cxxx: ', 'color: red', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
-imap <Leader>igc console.log('%cxxx: ', 'color: green', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
-imap <Leader>ibc console.log('%cxxx: ', 'color: blue', xxx);<ESC>^<space>/xxx<CR>vll<C-n>c
-imap <Leader>iC console.log('');<Left><Left><Left>
-imap <Leader>irC console.log('%c', 'color: red');<Esc>^/%c<CR>ea
-imap <Leader>igC console.log('%c', 'color: green');<Esc>^/%c<CR>ea
-imap <Leader>ibC console.log('%c', 'color: blue');<Esc>^/%c<CR>ea
+imap <Leader>ic console.log('xxx: ', xxx);<ESC>^<space>:%s/xxx//g<Left><Left>
+imap <Leader>irc console.log('%cxxx: ', 'color: red', xxx);<ESC>^<space>:%s/xxx//g<Left><Left>
+imap <Leader>igc console.log('%cxxx: ', 'color: green', xxx);<ESC>^<space>:%s/xxx//g<Left><Left>
+imap <Leader>ibc console.log('%cxxx: ', 'color: blue', xxx);<ESC>^<space>:%s/xxx//g<Left><Left>
+inoremap <Leader>iC console.log('');<Left><Left><Left>
+inoremap <Leader>irC console.log('%c', 'color: red');<Esc>^/%c<CR>ea
+inoremap <Leader>igC console.log('%c', 'color: green');<Esc>^/%c<CR>ea
+inoremap <Leader>ibC console.log('%c', 'color: blue');<Esc>^/%c<CR>ea
 
 "inoremap <Leader>id describe('', () => {});<Left><Left><Left><CR><Up><Esc>^f'a
 inoremap <Leader>id describe('', function () {});<Left><Left><Left><CR><Up><Esc>^f'a
@@ -459,15 +404,12 @@ nmap <Leader>ia o,ia
 nmap <Leader>iue o,iue
 nmap <Leader>ius o,ius
 nmap <Leader>ibw o,ibw
-
-" delete without yanking
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
-
-" replace currently selected text with default register
-" without yanking it
-vnoremap <leader>p "_dP
-
+"vmap J :m '>+1<CR>gv=gv
+"vmap K :m '<-2<CR>gv=gv
+nmap <C-d> <C-d>zz
+nmap <C-u> <C-u>zz
+nmap n nzzzv
+nmap N Nzzzv
 
 inoremap <Leader>o <C-o>
 nnoremap <sapce> za

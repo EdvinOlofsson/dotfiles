@@ -87,11 +87,13 @@ let s:yellow      = { "gui": "#E6DB74", "cterm": "186" }
 let s:orange      = { "gui": "#FD9720", "cterm": "208" }
 let s:purple      = { "gui": "#ae81ff", "cterm": "141" }
 let s:red         = { "gui": "#e73c50", "cterm": "196" }
+let s:purered     = { "gui": "#ff0000", "cterm": "52" }
 let s:darkred     = { "gui": "#5f0000", "cterm": "52" }
 
 let s:addfg       = { "gui": "#d7ffaf", "cterm": "193" }
 let s:addbg       = { "gui": "#5f875f", "cterm": "65" }
-let s:delbg       = { "gui": "#f75f5f", "cterm": "167" }
+let s:delfg       = { "gui": "#ff8b8b", "cterm": "210" }
+let s:delbg       = { "gui": "#f75f5f", "cterm": "124" }
 let s:changefg    = { "gui": "#d7d7ff", "cterm": "189" }
 let s:changebg    = { "gui": "#5f5f87", "cterm": "60" }
 
@@ -119,7 +121,7 @@ call s:h("MoreMsg",       { "fg": s:yellow })
 call s:h("ErrorMsg",      { "fg": s:black,      "bg": s:red,          "format": "standout" })
 call s:h("WarningMsg",    { "fg": s:red })
 call s:h("VertSplit",     { "fg": s:darkgrey,   "bg": s:darkblack })
-call s:h("LineNr",        { "fg": s:cyan,       "bg": s:lightblack })
+call s:h("LineNr",        { "fg": s:grey,       "bg": s:lightblack })
 call s:h("CursorLineNr",  { "fg": s:orange,     "bg": s:lightblack })
 call s:h("SignColumn",    {                     "bg": s:lightblack })
 
@@ -166,7 +168,7 @@ call s:h("Function",      { "fg": s:green })
 call s:h("Statement",     { "fg": s:pink })
 call s:h("Operator",      { "fg": s:pink })
 call s:h("Label",         { "fg": s:pink })
-call s:h("Keyword",       { "fg": s:aqua })
+call s:h("Keyword",       { "fg": s:pink })
 "        Conditional"
 "        Repeat"
 "        Exception"
@@ -234,6 +236,8 @@ call s:h("jpropertiesIdentifier",   { "fg": s:pink })
 call s:h("vimCommand",              { "fg": s:pink })
 
 " Javascript
+call s:h("jsClassKeyword",      { "fg": s:aqua, "format": "italic" })
+call s:h("jsGlobalObjects",     { "fg": s:aqua, "format": "italic" })
 call s:h("jsFuncName",          { "fg": s:green })
 call s:h("jsThis",              { "fg": s:pink })
 call s:h("jsFunctionKey",       { "fg": s:green })

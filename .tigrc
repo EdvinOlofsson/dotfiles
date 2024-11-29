@@ -80,7 +80,7 @@ set pager-view	= line-number:no,interval=5 text
 set stage-view	= line-number:no,interval=5 text
 set log-view	= line-number:no,interval=5 text
 set blob-view	= line-number:no,interval=5 text
-set diff-view	= line-number:no,interval=5 text:yes,commit-title-overflow=no,word-diff=color
+set diff-view	= line-number:no,interval=5 text:yes,commit-title-overflow=no
 
 # UI display settings
 set show-changes		= yes		# Show changes commits in the main view?
