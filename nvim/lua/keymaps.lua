@@ -16,7 +16,8 @@ function toggle_nvimtree_and_find_file()
     vim.cmd('NvimTreeFindFile')
   end
 end
-local api = require "nvim-tree.api"
+
+local api = require("nvim-tree.api")
 local function opts(desc)
   return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
 end

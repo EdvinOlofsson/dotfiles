@@ -5,8 +5,9 @@ alias one='cd ${NCS_DIR}/../lib/webui/webui-one'
 alias xclip="xclip -selection c"
 
 # alias vim='exec_scmb_expand_args /usr/bin/vim'
-alias vim='~/dev/git/dotfiles/nvim.appimage'
-alias nvim='~/dev/git/dotfiles/nvim.appimage'
+# alias vim='~/dev/git/dotfiles/nvim.appimage'
+# alias nvim='~/dev/git/dotfiles/nvim.appimage'
+alias vim='nvim'
 alias vi='vim'
 alias dot='cd ~/dev/git/dotfiles'
 alias la='ls -la --format single-column'

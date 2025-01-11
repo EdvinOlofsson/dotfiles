@@ -6,9 +6,7 @@ sudo apt install -y git
 sudo apt install -y keychain
 sudo apt install -y curl
 sudo apt install -y make cmake
-sudo apt install -y build-essential python3-dev
-sudo apt install -y nodejs
-sudo apt install -y npm
+sudo apt install -y build-essential
 sudo apt install -y tmux
 sudo apt install -y ripgrep
 sudo apt install -y bat
@@ -24,12 +22,22 @@ sudo apt install -y jq
 # PyEnv
 curl https://pyenv.run | bash
 # PyEnv Python dependencies
-sudo apt-get install build-essential zlib1g-dev libffi-dev libssl-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python-tk python3-tk tk-dev
+sudo apt-get install zlib1g-dev libffi-dev libssl-dev \
+    libbz2-dev libncurses-dev libreadline-dev libsqlite3-dev \
+    liblzma-dev python-tk python3-tk tk-dev python3-pip
+
+pyenv install 3.12
+
+# NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+nvm install --lts
 
 # NeoVim
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-chmod u+x nvim.appimage
+# curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+# chmod u+x nvim.appimage
+
+# ~1 major version behind latest release but gives easy python3 support
+sudo apt-get install python3-neovim
 
 # Vim-plug
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
@@ -47,11 +55,11 @@ git clone https://github.com/magicmonty/bash-git-prompt.git ./.bash-git-prompt -
 # SCM_Breeze
 git clone git://github.com/scmbreeze/scm_breeze.git ./.scm_breeze
 ./.scm_breeze/install.sh
-# nvim config
-mkdir ~/.config/nvim
+
+# nvim confibg
+mkdir -p ~/.config/nvim
 ln -sf ~/dev/git/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
 ln -sf ~/dev/git/dotfiles/nvim/treesitter.lua ~/.config/nvim/treesitter.lua
-ln -sf ~/dev/git/dotfiles/nvim/plugged ~/.config/nvim/plugged
 ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
 ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
 ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc

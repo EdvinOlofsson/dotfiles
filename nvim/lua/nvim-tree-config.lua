@@ -1,4 +1,3 @@
-asdasd
 local function on_attach(bufnr)
   local api = require('nvim-tree.api')
 

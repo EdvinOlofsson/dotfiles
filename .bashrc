@@ -125,7 +125,7 @@ export PATH="$HOME/dev/git/dotfiles/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/dev/releases/tctl:$PATH"
 #Load ssh keys
-/usr/bin/keychain $HOME/.ssh/stash
+/usr/bin/keychain $HOME/.ssh/dotfiles
 source $HOME/.keychain/$HOSTNAME-sh
 
 #Load aliases
@@ -139,8 +139,6 @@ if [ -f ~/dev/git/tailf/env.sh ]; then
 fi
 
 # caps -> ctrl
-setxkbmap -option caps:ctrl_modifier
-# Keyboard delay and repeat
 xset r rate 180 30
 #Adding more colors to the 'ls' command
 export LS_COLORS "${LS_COLORS}:*.js=00;32"
@@ -162,7 +160,7 @@ export TAILF_CACHE=~/dev/cache
 
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [ -s "/home/edvin/.scm_breeze/scm_breeze.sh" ] && source "/home/edvin/.scm_breeze/scm_breeze.sh"
 
@@ -200,3 +198,4 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
