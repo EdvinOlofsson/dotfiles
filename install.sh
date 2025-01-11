@@ -22,6 +22,9 @@ sudo apt-get install zlib1g-dev libffi-dev libssl-dev \
 
 # PyEnv $ pip
 curl https://pyenv.run | bash
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 pyenv install 3.12
 sudo apt-get install python3-pip
 pip3 install six atlassian-python-api rich jenkins python-jenkins
@@ -54,12 +57,12 @@ git clone git://github.com/scmbreeze/scm_breeze.git ./.scm_breeze
 
 # nvim confibg
 # mkdir -p ~/.config/nvim
-# ln -sf ~/dev/git/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
-# ln -sf ~/dev/git/dotfiles/nvim/treesitter.lua ~/.config/nvim/treesitter.lua
-# ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
-# ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
-# ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
-# ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
+ln -sf ~/dev/git/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
+ln -sf ~/dev/git/dotfiles/nvim/treesitter.lua ~/.config/nvim/treesitter.lua
+ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
+ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
+ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
+ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
 # ln -sf ~/dev/git/dotfiles/nvim/UltiSnips ~/.config/nvim/UltiSnips
 # ln -sf ~/dev/git/dotfiles/nvim/lua ~/.config/nvim/lua
 
