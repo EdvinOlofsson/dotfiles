@@ -1,5 +1,9 @@
 #!/bin/bash
 
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 sudo add-apt-repository universe
 
 # Install dependencies
@@ -31,6 +35,8 @@ pip3 install six atlassian-python-api rich jenkins python-jenkins
 
 # NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 nvm install --lts
 
 # NeoVim
@@ -55,16 +61,18 @@ git clone https://github.com/magicmonty/bash-git-prompt.git ./.bash-git-prompt -
 git clone git://github.com/scmbreeze/scm_breeze.git ./.scm_breeze
 ./.scm_breeze/install.sh
 
-# nvim confibg
-# mkdir -p ~/.config/nvim
+# nvim config links
+mkdir -p ~/.config/nvim
 ln -sf ~/dev/git/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
 ln -sf ~/dev/git/dotfiles/nvim/treesitter.lua ~/.config/nvim/treesitter.lua
 ln -sf ~/dev/git/dotfiles/nvim/plugin ~/.config/nvim/plugin
 ln -sf ~/dev/git/dotfiles/nvim/ftplugin ~/.config/nvim/ftplugin
 ln -sf ~/dev/git/dotfiles/nvim/doc ~/.config/nvim/doc
 ln -sf ~/dev/git/dotfiles/nvim/autoload ~/.config/nvim/autoload
-# ln -sf ~/dev/git/dotfiles/nvim/UltiSnips ~/.config/nvim/UltiSnips
-# ln -sf ~/dev/git/dotfiles/nvim/lua ~/.config/nvim/lua
+rm -rf ~/.config/nvim/UltiSnips
+rm -rf ~/.config/nvim/Lua
+ln -sf ~/dev/git/dotfiles/nvim/UltiSnips ~/.config/nvim/UltiSnips
+ln -sf ~/dev/git/dotfiles/nvim/lua ~/.config/nvim/lua
 
 ln -sf ~/dev/git/dotfiles/.tmux.conf ~/.tmux.conf
 ln -sf ~/dev/git/dotfiles/.tmux ~/.tmux
