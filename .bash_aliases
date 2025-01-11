@@ -8,7 +8,6 @@ alias xclip="xclip -selection c"
 # alias vim='~/dev/git/dotfiles/nvim.appimage'
 # alias nvim='~/dev/git/dotfiles/nvim.appimage'
 alias vim='nvim'
-alias vi='vim'
 alias dot='cd ~/dev/git/dotfiles'
 alias la='ls -la --format single-column'
 alias pycli='ipython ~/dev/git/ncs_pycli/ncs_pycli'

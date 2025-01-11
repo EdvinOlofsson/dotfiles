@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo add-apt-repository universe
+
 # Install dependencies
 sudo apt install -y ruby
 sudo apt install -y git
