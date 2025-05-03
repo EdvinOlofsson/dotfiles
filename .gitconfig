@@ -1,6 +1,5 @@
 [user]
         name = Edvin Olofsson
-        email = eolofsso@cisco.com
 [core]
         editor = ~/dev/git/dotfiles/nvim.appimage
         whitespace = trailing-space,space-before-tab
