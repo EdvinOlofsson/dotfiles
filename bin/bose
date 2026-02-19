@@ -1,0 +1,5 @@
+#!/bin/bash
+
+bluetoothctl power on
+MAC_ADDRESS=$(bluetoothctl devices | grep "Bose QC" | awk '{print $2}')
+bluetoothctl connect $MAC_ADDRESS

@@ -1,3 +1,12 @@
+[url "git@github.com:"]
+        insteadOf = https://github.com/
+[gpg]
+        format = ssh
+[user]
+        signingkey = ~/.ssh/github_cisco.pub
+[commit]
+        gpgsign = true
+
 [user]
         name = Edvin Olofsson
         email = eolofsso@cisco.com
@@ -60,3 +69,5 @@
 	enabled = true
 [maintenance]
 	repo = /home/edvin/dev/git/tailf
+[init]
+	defaultBranch = trunk

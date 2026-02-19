@@ -200,3 +200,29 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Auto-source tailf worktree env.sh in tmux
+_source_tailf_env() {
+    local main_repo="$HOME/dev/git/tailf"
+    local worktree_root
+
+    worktree_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+
+    if [ -n "$worktree_root" ]; then
+        local common_dir
+        common_dir="$(git rev-parse --git-common-dir 2>/dev/null)"
+        common_dir="$(cd "$common_dir" 2>/dev/null && pwd)"
+        if [ "$common_dir" = "$main_repo/.git" ] && [ -f "$worktree_root/env.sh" ]; then
+            source "$worktree_root/env.sh"
+            return
+        fi
+    fi
+
+    if [ -f "$main_repo/env.sh" ]; then
+        source "$main_repo/env.sh"
+    fi
+}
+
+if [ -n "$TMUX" ]; then
+    _source_tailf_env
+fi

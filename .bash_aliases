@@ -4,9 +4,17 @@ alias tailf='cd ~/dev/git/tailf/'
 alias one='cd ${NCS_DIR}/../lib/webui/webui-one'
 alias xclip="xclip -selection c"
 
+alias haiku='copilot --model claude-haiku-4.5'
+alias opus='copilot --model claude-opus-4.5'
+alias claude='copilot --model claude-sonnet-4.5'
+
 # alias vim='exec_scmb_expand_args /usr/bin/vim'
-alias vim='~/dev/git/dotfiles/nvim.appimage'
-alias nvim='~/dev/git/dotfiles/nvim.appimage'
+# alias vim='~/dev/git/dotfiles/nvim.appimage'
+# alias nvim='~/dev/git/dotfiles/nvim.appimage'
+
+alias vim='~/Downloads/nvim-linux-x86_64/bin/nvim'
+alias nvim='~/Downloads/nvim-linux-x86_64/bin/nvim'
+
 alias vi='vim'
 alias dot='cd ~/dev/git/dotfiles'
 alias la='ls -la --format single-column'
@@ -19,10 +27,11 @@ alias bashal='vim ~/.bash_aliases'
 #alias ,ye='git rev-parse --abbrev-ref HEAD | grep -o "ENG-[0-9]\+" | xargs echo -n | xclip -selection c'
 alias gfoc='git-fzf-checkout.sh'
 alias gfco='git-fzf-checkout.sh'
+alias gfl='git-log.sh'
 alias gsr='git-soft-reset-file.sh'
 alias jqf='jqf.sh'
 alias grh='git reset HEAD~1'
-alias beep='paplay /usr/share/sounds/gnome/default/alerts/glass.ogg'
+alias beep='paplay /usr/share/sounds/gnome/default/alerts/click.ogg'
 
 prepare_commit_message() {
     #ENG_STRING=$(git rev-parse --abbrev-ref HEAD | grep -o "ENG-[0-9]\+")
@@ -62,3 +71,17 @@ append_beep() {
     READLINE_LINE="$READLINE_LINE; beep"
 }
 bind -x '"\C-b": append_beep'
+
+copy() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: copy <FILE>"
+        return 1
+    fi
+    readlink -f "$1" | xclip && echo "Copied: $(readlink -f "$1")"
+}
+
+_copy_completion() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    COMPREPLY=($(compgen -f -- "$cur"))
+}
+complete -o default -o filenames -F _copy_completion copy

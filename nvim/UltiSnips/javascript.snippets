@@ -12,14 +12,20 @@ ${1:iterable}.reduce((acc, ${2:key}) => {
 endsnippet
 
 snippet arrow
-const ${1:name} = (${2:argmuents}) => {
-    ${3:# code}
+const ${1:name} = (${2}) => {
+    ${3}
 };
 endsnippet
 
 snippet func
-function ${1:name}(){
-    ${2:# code}
+function ${1:name}(${2}){
+    ${3}
+};
+endsnippet
+
+snippet afunc
+async function ${1:name}(${2}){
+    ${3}
 };
 endsnippet
 
@@ -66,6 +72,12 @@ endsnippet
 
 snippet us
 const [${1}, ${2}] = useState(${3});
+endsnippet
+
+snippet uc
+const ${1} = useCallback((${2}) => {
+    ${4}
+}, [${3}])
 endsnippet
 
 #HTML snippets

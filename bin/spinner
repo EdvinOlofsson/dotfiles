@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Function to display the spinner
+spinner() {
+    local pid
+    local sp="\|/-"
+    local i=1
+
+    # Run the given command in the background and capture its PID
+    "$@" & pid=$!
+    
+    # Display the spinner while the command is running
+    while ps -p $pid > /dev/null; do
+        printf "\b%c" "${sp:i++%4:1}"
+        sleep 0.1
+    done
+    # Wait for the command to complete and then return its exit code
+    wait $pid
+}
+
+# Check if the script is being run with arguments (i.e., the command to run)
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <command> [args...]"
+    exit 1
+fi
+
+# Run the spinner with the provided command and arguments
+spinner "$@"

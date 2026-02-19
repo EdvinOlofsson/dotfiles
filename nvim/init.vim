@@ -148,6 +148,11 @@ let g:ycm_use_ultisnips_completer = 0
 let g:ycm_filter_diagnostics = { 'javascript': { 'regex': [ '.*' ] } }
 let g:ycm_show_diagnostics_ui = 0
 
+let g:ycm_goto_buffer_command = 'split-or-existing-window'
+nmap gD :tab YcmComplete GoToDefinition<CR>
+" nmap gD :YcmComplete GoToDeclaration<CR>
+nmap <leader>gT :tab YcmComplete GoToType<CR>
+
 "Toggle YouCompleteMe on and off with F3
 function Toggle_ycm()
     if g:ycm_show_diagnostics_ui == 0
@@ -221,7 +226,7 @@ let g:ale_echo_msg_error_str = '💩'
 let g:ale_echo_msg_warning_str = '💩'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_enter = 0
 highlight clear ALEErrorSign
 highlight clear ALEWarningSign
 nnoremap <Leader>af :ALEFix<CR>
@@ -306,7 +311,7 @@ set mouse=
 set nobackup
 set noswapfile
 set encoding=utf-8
-set suffixesadd+=.js,.jsx
+set suffixesadd+=.js,.jsx,.ts,tsx
 set path+=/usr/include
 autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/
 autocmd BufNewFile,BufRead ~/dev/git/tailf/* set path+=$NCS_DIR/../lib/webui/webui-one/src
@@ -337,7 +342,7 @@ set guicursor=""
 hi MatchParen ctermfg=NONE ctermfg=NONE
 set list
 " set listchars=tab:▸\ ,trail:·,eol:¬,space:·
-set listchars=tab:▸\ ,trail:·,
+set listchars=tab:.\ ,trail:·,
 set splitbelow
 set splitright
 set expandtab
@@ -369,6 +374,7 @@ nnoremap <Leader><Up> :exe "resize +5"<CR>
 nnoremap <Leader><Down> :exe "resize -5"<CR>
 nnoremap <Leader><Left> :exe "vertical resize -1"<CR>
 nnoremap <Leader><Right> :exe "vertical resize +1"<CR>
+nnoremap <Leader><space>ttw :%s/\s\+$//e<Cr>
 nnoremap <TAB> >>
 nnoremap <S-TAB> <<
 xnoremap p P
@@ -431,6 +437,16 @@ nnoremap K 5<Up>
 vnoremap K 5<Up>
 nnoremap j gj
 nnoremap k gk
+
+nnoremap <Leader>1 1gt
+nnoremap <Leader>2 2gt
+nnoremap <Leader>3 3gt
+nnoremap <Leader>4 4gt
+nnoremap <Leader>5 5gt
+nnoremap <Leader>6 6gt
+nnoremap <Leader>7 7gt
+nnoremap <Leader>8 8gt
+nnoremap <Leader>9 9gt
 
 iabbrev idocroot <docroot>/home/eolofsso/dev/git/webui-prime/docroot/ncs</docroot>
 iabbrev idocrootone <docroot>/home/eolofsso/dev/git/tailf/lib/webui/webui-one/docroot</docroot>
